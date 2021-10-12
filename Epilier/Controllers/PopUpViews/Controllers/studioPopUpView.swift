@@ -8,7 +8,10 @@
 
 import UIKit
 
-class servicePopUpView: UIViewController {
+class studioPopUpView: UIViewController, UIGestureRecognizerDelegate {
+    
+    
+    let viewGesture = UIView()
     
     lazy var dismissButton: UIButton = {
         let button = UIButton()
@@ -137,7 +140,6 @@ class servicePopUpView: UIViewController {
         return button
     }()
     
-    
     override func viewDidLoad() {
         super.viewDidLoad()
         view.backgroundColor = .white
@@ -163,6 +165,7 @@ class servicePopUpView: UIViewController {
     }
     
     func setConstraints(){
+        viewGesture.translatesAutoresizingMaskIntoConstraints = false
         NSLayoutConstraint.activate([
             dismissButton.centerXAnchor.constraint(equalTo: view.centerXAnchor),
             dismissButton.topAnchor.constraint(equalTo: view.topAnchor),
@@ -205,11 +208,11 @@ class servicePopUpView: UIViewController {
             phoneAnswer.topAnchor.constraint(equalTo: phone.bottomAnchor, constant: 1),
             phoneAnswer.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: 15),
             phoneAnswer.widthAnchor.constraint(equalTo: view.widthAnchor, multiplier: 0.45),
-            
-            ])
+        ])
     }
     
     @objc func dismissSelf() {
+        print("Вызвана")
         self.dismiss(animated: true)
     }
 }

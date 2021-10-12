@@ -7,8 +7,9 @@
 
 import Foundation
 import UIKit
+import DJSemiModalViewController
 
-class MainViewController: UIViewController{
+class FirstViewController: UIViewController{
     
     lazy var topLabel: UILabel = {
         let label = UILabel()
@@ -36,28 +37,37 @@ class MainViewController: UIViewController{
     
     let scrollView: UIScrollView = {
         let v = UIScrollView()
-        let image1 = UIImageView(image: UIImage(named: "story1"))
-        let image2 = UIImageView(image: UIImage(named: "story2"))
-        let image3 = UIImageView(image: UIImage(named: "story3"))
-        v.addSubview(image1)
-        v.addSubview(image2)
-        v.addSubview(image3)
-        image1.translatesAutoresizingMaskIntoConstraints = false
-        image2.translatesAutoresizingMaskIntoConstraints = false
-        image3.translatesAutoresizingMaskIntoConstraints = false
+//        let image1 = UIImageView(image: UIImage(named: "story1"))
+//        let image2 = UIImageView(image: UIImage(named: "story2"))
+//        let image3 = UIImageView(image: UIImage(named: "story3"))
+        let button1 = UIButton()
+        let button2 = UIButton()
+        let button3 = UIButton()
+        button1.setImage(UIImage(named: "story1"), for: .normal)
+        button2.setImage(UIImage(named: "story2"), for: .normal)
+        button3.setImage(UIImage(named: "story3"), for: .normal)
+        v.addSubview(button1)
+        v.addSubview(button2)
+        v.addSubview(button3)
+        button1.translatesAutoresizingMaskIntoConstraints = false
+        button2.translatesAutoresizingMaskIntoConstraints = false
+        button3.translatesAutoresizingMaskIntoConstraints = false
+        button1.addTarget(self, action: Selector("firstButtonFunc"), for: .touchUpInside)
+        button2.addTarget(self, action: Selector("secondButtonFunc"), for: .touchUpInside)
+        button3.addTarget(self, action: Selector("thirdButtonFunc"), for: .touchUpInside)
         v.translatesAutoresizingMaskIntoConstraints = false
         v.backgroundColor = UIColor(hexString: "#C8EFF4")
-        image1.leftAnchor.constraint(equalTo: v.leftAnchor, constant: 0.0).isActive = true
-        image1.topAnchor.constraint(equalTo: v.topAnchor, constant: 0.0).isActive = true
-        image1.rightAnchor.constraint(equalTo: v.rightAnchor, constant: -300.0).isActive = true
-        image1.bottomAnchor.constraint(equalTo: v.bottomAnchor, constant: 40).isActive = true
-        image2.leftAnchor.constraint(equalTo: image1.rightAnchor, constant: -20.0).isActive = true
-        image2.topAnchor.constraint(equalTo: v.topAnchor, constant: 0.0).isActive = true
-        image2.bottomAnchor.constraint(equalTo: v.bottomAnchor, constant: 40).isActive = true
-        image3.leftAnchor.constraint(equalTo: image2.rightAnchor, constant: -20.0).isActive = true
-        image3.topAnchor.constraint(equalTo: v.topAnchor, constant: 0.0).isActive = true
+        button1.leftAnchor.constraint(equalTo: v.leftAnchor, constant: 0.0).isActive = true
+        button1.topAnchor.constraint(equalTo: v.topAnchor, constant: 0.0).isActive = true
+        button1.rightAnchor.constraint(equalTo: v.rightAnchor, constant: -300.0).isActive = true
+        button1.bottomAnchor.constraint(equalTo: v.bottomAnchor, constant: 40).isActive = true
+        button2.leftAnchor.constraint(equalTo: button1.rightAnchor, constant: -20.0).isActive = true
+        button2.topAnchor.constraint(equalTo: v.topAnchor, constant: 0.0).isActive = true
+        button2.bottomAnchor.constraint(equalTo: v.bottomAnchor, constant: 40).isActive = true
+        button3.leftAnchor.constraint(equalTo: button2.rightAnchor, constant: -20.0).isActive = true
+        button3.topAnchor.constraint(equalTo: v.topAnchor, constant: 0.0).isActive = true
         
-        image3.bottomAnchor.constraint(equalTo: v.bottomAnchor, constant: 40).isActive = true
+        button3.bottomAnchor.constraint(equalTo: v.bottomAnchor, constant: 40).isActive = true
         
         return v
     }()
@@ -71,7 +81,7 @@ class MainViewController: UIViewController{
         //button.setTitle(, for: .normal)
         button.setTitle("Epilier на ул.Павлюхина, 25", for: .normal)
         button.setTitleColor(.black, for: .normal)
-        button.addTarget(self, action: Selector("masterFunc"), for: .touchUpInside)
+        button.addTarget(self, action: Selector("recordFunc"), for: .touchUpInside)
         return button
     }()
     
@@ -101,6 +111,7 @@ class MainViewController: UIViewController{
         button.layer.cornerRadius = 10
         button.translatesAutoresizingMaskIntoConstraints = false
         button.setImage(UIImage(named: "services"), for: .normal)
+        button.addTarget(self, action: Selector(("mastersFunc")), for: .touchUpInside)
         return button
     }()
     
@@ -212,7 +223,17 @@ class MainViewController: UIViewController{
     }
 }
 
-extension MainViewController{
+extension FirstViewController{
+    
+    @objc func firstButtonFunc(){
+        self.present(FirstArticleViewController(), animated: true)
+    }
+    @objc func secondButtonFunc(){
+        self.present(FirstArticleViewController(), animated: true)
+    }
+    @objc func thirdButtonFunc(){
+        self.present(FirstArticleViewController(), animated: true)
+    }
     
     @objc func againFunc(){
         let child = againPopUpView()
@@ -226,15 +247,38 @@ extension MainViewController{
     }
     
     
-    @objc func masterFunc(){
+    @objc func recordFunc(){
         
-        let child = servicePopUpView()
+        let child = studioPopUpView()
         child.transitioningDelegate = transition   // 2
         child.modalPresentationStyle = .custom  // 3
         height = view.frame.height * 0.60
         transition.height = height
         self.present(child, animated: true)
         
+    }
+    
+    @objc func mastersFunc(){
+        let newVc = ServicesTableViewController()
+        DispatchQueue.main.async {
+            let backItem = UIBarButtonItem()
+            backItem.title = "Назад"
+            self.navigationItem.backBarButtonItem = backItem
+            self.navigationItem.backBarButtonItem?.tintColor = .black
+            self.navigationItem.title = "Мастера"
+            self.navigationController?.navigationBar.topItem?.title = "Мастера"
+            self.navigationController?.pushViewController(newVc, animated: true)
+        }
+        // Поялвение popUpView
+//        let controller = createSemiModalViewController()
+//
+//        controller.presentOn(presentingViewController: self, animated: true, onDismiss: {
+//            self.tabBarController?.tabBar.isHidden = false
+//            debugPrint("`DJSemiModalViewController` dismissed")
+//        })
+//        self.tabBarController?.tabBar.isHidden = true
+//        debugPrint("`DJSemiModalViewController` presented")
+  
     }
     
     @objc func serviceFunc(){
@@ -251,7 +295,6 @@ extension MainViewController{
             self.navigationController?.pushViewController(newVc, animated: true)
             
              }
-        
     }
     
     func adViews(){
@@ -268,5 +311,34 @@ extension MainViewController{
         self.geolocationButton.addSubview(imageLocation)
         self.geolocationButton.addSubview(iconLocation)
         self.view.addSubview(popupView)
+    }
+    
+    private func createSemiModalViewController() -> DJSemiModalViewController {
+
+        let controller = DJSemiModalViewController()
+
+        controller.maxWidth = view.frame.width
+        controller.minHeight = 550
+
+        controller.title = "Title"
+        //controller.titleLabel.font = UIFont.systemFont(ofSize: 22, weight: UIFont.Weight.bold)
+        controller.closeButton.setTitle("Done", for: .normal)
+        controller.widthButton.setTitle("Напечатать", for: .normal)
+
+        let label = UILabel()
+        label.text = "An example label"
+        label.textAlignment = .center
+        controller.addArrangedSubview(view: label)
+
+        let imageView = UIImageView(image: UIImage(named: "image1"))
+        imageView.contentMode = .scaleAspectFit
+        controller.addArrangedSubview(view: imageView, height: 200)
+
+        let secondLabel = UILabel()
+        secondLabel.textAlignment = .center
+        secondLabel.text = "Pen and Pineapple"
+        controller.addArrangedSubview(view: secondLabel)
+
+        return controller
     }
 }

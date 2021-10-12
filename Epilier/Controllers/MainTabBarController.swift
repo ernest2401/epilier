@@ -9,30 +9,51 @@ import UIKit
 
 class MainTabBarController: UITabBarController {
     
+    var height: CGFloat!
+    private let transition = PanelTransition()
     
     override func viewDidLoad() {
         super.viewDidLoad()
         view.backgroundColor = UIColor(hexString: "#FFFFFF")
+        
         setupTabBar()
-            }
+        setTabBarItems()
+    }
+    
+    override func tabBar(_ tabBar: UITabBar, didSelect item: UITabBarItem) {
+        if item.tag == 2{
+            let child = SignUpPopUpView()
+            child.transitioningDelegate = transition   // 2
+            child.modalPresentationStyle = .custom  // 3
+            height = view.frame.height * 0.60
+            transition.height = height
+            //self.present(child, animated: true)
+            DispatchQueue.main.async(execute: {
+                self.present(child, animated: true)
+            })
+        }
+    }
+    
     
     func setTabBarItems(){
         
         let massive = ["Home","Discovery","More Square","Chat","Profile"]
         for item in 0...massive.count - 1 {
+            print(item)
             let myTabBarItem1 = (self.tabBar.items?[item])! as UITabBarItem
-            myTabBarItem1.image = UIImage(named: massive[item])?.withRenderingMode(UIImage.RenderingMode.alwaysOriginal)
+            myTabBarItem1.tag = item
+            
         }
-        
+
     }
     
     
     func setupTabBar(){
-        let mainViewController = createNavController(vc: MainViewController())
+        let mainViewController = createNavController(vc: FirstViewController())
         let secondViewController = SecondViewController()
-        let thirdViewController = ThirdViewController()
+        let thirdViewController = createNavController(vc: FirstViewController())
         let fourthViewController = FourthViewController()
-        let fifthViewController = FifthViewController()
+        let fifthViewController = createNavController(vc: FifthViewController())
         viewControllers = [mainViewController,secondViewController,thirdViewController,fourthViewController,fifthViewController]
         setupAnimation()
         
@@ -52,15 +73,5 @@ class MainTabBarController: UITabBarController {
         let navController = UINavigationController(rootViewController: vc)
         return navController
     }
-    
-}
-
-class ThirdViewController: UIViewController {
-    
-}
-class FourthViewController: UIViewController {
-    
-}
-class FifthViewController: UIViewController {
     
 }

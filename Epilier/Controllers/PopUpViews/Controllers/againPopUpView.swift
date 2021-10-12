@@ -52,7 +52,7 @@ class againPopUpView: UIViewController {
         button.layer.shadowColor = UIColor.black.cgColor
         button.layer.shadowOffset = CGSize(width: 0.0, height: 2.0)
         button.layer.shadowOpacity = 0.2
-        button.layer.shadowRadius = 2
+        button.layer.shadowRadius = 20
         return button
     }()
     

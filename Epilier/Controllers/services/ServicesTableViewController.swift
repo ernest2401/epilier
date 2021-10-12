@@ -6,8 +6,11 @@
 //
 
 import UIKit
+import PullUpController
 
 class ServicesTableViewController: UIViewController {
+    
+    var object = ShopController()
     
     var table = UITableView(frame: CGRect.zero)
     
@@ -17,6 +20,8 @@ class ServicesTableViewController: UIViewController {
     ]
 
     override func viewDidLoad() {
+        view.backgroundColor = .white
+        self.tabBarController?.tabBar.isHidden = true
         super.viewDidLoad()
         setNavigationBar()
         self.view.addSubview(table)
@@ -41,7 +46,7 @@ class ServicesTableViewController: UIViewController {
         NSLayoutConstraint.activate([
             table.topAnchor.constraint(equalTo: view.topAnchor,constant: 0),
             table.leadingAnchor.constraint(equalTo: view.leadingAnchor,constant: 0),
-            table.trailingAnchor.constraint(equalTo: view.trailingAnchor,constant: 0),
+            table.trailingAnchor.constraint(equalTo: view.trailingAnchor,constant: 10),
             table.bottomAnchor.constraint(equalTo: view.bottomAnchor,constant: 0),
         ])
     }
@@ -95,4 +100,14 @@ extension ServicesTableViewController: ExpandableHeaderViewDelegate{
         header.customInit(title: menuData[section].subMenu, section: section, delegate: self)
         return header
     }
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        object.name = menuData[indexPath.section].menu[indexPath.row]
+        addPullUpController(object, initialStickyPointOffset: CGFloat(100.0), animated: true)
+        
+    }
+    
+    override func viewWillDisappear(_ animated: Bool) {
+        self.tabBarController?.tabBar.isHidden = false
+    }
 }
+

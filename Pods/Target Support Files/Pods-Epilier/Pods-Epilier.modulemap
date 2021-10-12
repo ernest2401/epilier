@@ -1,0 +1,6 @@
+framework module Pods_Epilier {
+  umbrella header "Pods-Epilier-umbrella.h"
+
+  export *
+  module * { export * }
+}

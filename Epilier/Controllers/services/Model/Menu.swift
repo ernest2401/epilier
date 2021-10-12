@@ -13,6 +13,7 @@ struct Menu {
     var menu: [String]!
     var isStatus: Bool!
     var images: [String]
+
     
     init(subMenu: String,menu: [String], isStatus: Bool,images: [String]){
         self.subMenu = subMenu
@@ -20,4 +21,10 @@ struct Menu {
         self.isStatus = isStatus
         self.images = images
     }
+}
+
+struct Program {
+    var name: String
+    var price: String
+    var time: String
 }

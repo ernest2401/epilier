@@ -1,0 +1,20 @@
+PODS:
+  - DJSemiModalViewController (0.1.4)
+  - PullUpController (0.8.0)
+
+DEPENDENCIES:
+  - DJSemiModalViewController
+  - PullUpController
+
+SPEC REPOS:
+  trunk:
+    - DJSemiModalViewController
+    - PullUpController
+
+SPEC CHECKSUMS:
+  DJSemiModalViewController: a7b049b3a565207f739ba81ea99a71ac04deb0fd
+  PullUpController: 2f7ccaa0f35b31b47e3efbe1854c7f781552b3c7
+
+PODFILE CHECKSUM: 6d0735991a0990d60b0209b305debe6b507b7d19
+
+COCOAPODS: 1.11.2
