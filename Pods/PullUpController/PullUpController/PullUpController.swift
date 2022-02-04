@@ -10,7 +10,6 @@ import UIKit
 
 open class PullUpController: UIViewController {
     
-    public var expanded: Bool = false
     public enum Action {
         /**
          The action used when the pull up controller's view is added to its parent view
@@ -372,8 +371,6 @@ open class PullUpController: UIViewController {
             gestureRecognizer.setTranslation(.zero, in: view)
         case .ended:
             goToNearestStickyPoint(verticalVelocity: gestureRecognizer.velocity(in: view).y)
-            //print("Zakonchilos")
-            expanded = !expanded
         default:
             break
         }
@@ -465,7 +462,7 @@ open class PullUpController: UIViewController {
             let parentViewHeight = parent?.view.frame.height
             else { return }
         topConstraint?.constant = parentViewHeight
-        print("Скрыто")
+        
     }
     
 }

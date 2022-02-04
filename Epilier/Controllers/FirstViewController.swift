@@ -8,8 +8,12 @@
 import Foundation
 import UIKit
 import DJSemiModalViewController
+import Alamofire
 
 class FirstViewController: UIViewController{
+    
+    var completion: (() -> ())?
+    var object = global()
     
     lazy var topLabel: UILabel = {
         let label = UILabel()
@@ -29,6 +33,8 @@ class FirstViewController: UIViewController{
     lazy var ringButton: UIButton = {
         let button = UIButton()
         button.setImage(UIImage(named: "Ring"), for: .normal)
+        button.addTarget(self, action: Selector("ringFunc"), for: .touchUpInside)
+        button.translatesAutoresizingMaskIntoConstraints = false
         return button
     }()
     
@@ -37,15 +43,14 @@ class FirstViewController: UIViewController{
     
     let scrollView: UIScrollView = {
         let v = UIScrollView()
-//        let image1 = UIImageView(image: UIImage(named: "story1"))
-//        let image2 = UIImageView(image: UIImage(named: "story2"))
-//        let image3 = UIImageView(image: UIImage(named: "story3"))
+        v.showsHorizontalScrollIndicator = false
+        v.showsVerticalScrollIndicator = false
         let button1 = UIButton()
         let button2 = UIButton()
         let button3 = UIButton()
         button1.setImage(UIImage(named: "story1"), for: .normal)
         button2.setImage(UIImage(named: "story2"), for: .normal)
-        button3.setImage(UIImage(named: "story3"), for: .normal)
+        button3.setImage(UIImage(named: "story1"), for: .normal)
         v.addSubview(button1)
         v.addSubview(button2)
         v.addSubview(button3)
@@ -76,7 +81,9 @@ class FirstViewController: UIViewController{
         let button = UIButton()
         //button.frame.size = CGSize(width: 343, height: 56)
         button.backgroundColor = .white
-        button.layer.shadowOpacity = 0.2
+        button.layer.shadowColor = UIColor.black.cgColor
+        button.layer.shadowOpacity = 0.4
+        button.layer.shadowRadius = 5
         button.layer.cornerRadius = 10
         //button.setTitle(, for: .normal)
         button.setTitle("Epilier на ул.Павлюхина, 25", for: .normal)
@@ -96,22 +103,69 @@ class FirstViewController: UIViewController{
         return button
     }()
     
+    let serviceImage: UIImageView = {
+        let image = UIImageView(image: UIImage(named: "firstService"))
+        image.layer.cornerRadius = 10
+        image.clipsToBounds = true
+        image.translatesAutoresizingMaskIntoConstraints = false
+        return image
+    }()
+    
+    let masterImage: UIImageView = {
+        let image = UIImageView(image: UIImage(named: "firstMaster"))
+        image.layer.cornerRadius = 10
+        image.clipsToBounds = true
+        image.translatesAutoresizingMaskIntoConstraints = false
+        return image
+    }()
+    
+    let againImage: UIImageView = {
+        let image = UIImageView(image: UIImage(named: "firstAgain"))
+        image.layer.cornerRadius = 10
+        image.clipsToBounds = true
+        image.translatesAutoresizingMaskIntoConstraints = false
+        return image
+    }()
+    
     lazy var serviceButton: UIButton = {
         let button = UIButton()
         button.layer.cornerRadius = 10
         button.translatesAutoresizingMaskIntoConstraints = false
-        button.setImage(UIImage(named: "services"), for: .normal)
-        //button.backgroundColor = .gray
+        button.backgroundColor = UIColor.white
+        button.layer.shadowColor = UIColor.black.cgColor
+        button.layer.shadowOffset = CGSize(width: 0.0, height: 2.0)
+        button.layer.shadowOpacity = 0.2
+        button.layer.shadowRadius = 2
+        button.translatesAutoresizingMaskIntoConstraints = false
+        button.backgroundColor = .gray
         button.addTarget(self, action: Selector("serviceFunc"), for: .touchUpInside)
         return button
     }()
     
     lazy var masterButton: UIButton = {
         let button = UIButton()
-        button.layer.cornerRadius = 10
         button.translatesAutoresizingMaskIntoConstraints = false
-        button.setImage(UIImage(named: "services"), for: .normal)
+        button.layer.cornerRadius = 10
+        button.layer.shadowColor = UIColor.black.cgColor
+        button.layer.shadowOffset = CGSize(width: 0.0, height: 2.0)
+        button.layer.shadowOpacity = 0.2
+        button.layer.shadowRadius = 2
         button.addTarget(self, action: Selector(("mastersFunc")), for: .touchUpInside)
+        return button
+    }()
+    
+    lazy var againButton: UIButton = {
+        let button = UIButton()
+        button.translatesAutoresizingMaskIntoConstraints = false
+        button.layer.cornerRadius = 10
+        button.layer.shadowColor = UIColor.black.cgColor
+        button.layer.shadowOffset = CGSize(width: 0.0, height: 2.0)
+        button.layer.shadowOpacity = 0.2
+        button.layer.shadowRadius = 2
+        
+        //button.setImage(UIImage(named: "firstAgain"), for: .normal)
+        button.addTarget(self, action: Selector(("againFunc")), for: .touchUpInside)
+        //button.addTarget(self, action: Selector(("toStudioFunc")), for: .touchUpInside)
         return button
     }()
     
@@ -119,15 +173,6 @@ class FirstViewController: UIViewController{
         let view = UIView()
         view.backgroundColor = .gray
         return view
-    }()
-    
-    lazy var againButton: UIButton = {
-        let button = UIButton()
-        button.layer.cornerRadius = 10
-        button.translatesAutoresizingMaskIntoConstraints = false
-        button.setImage(UIImage(named: "services"), for: .normal)
-        button.addTarget(self, action: Selector(("againFunc")), for: .touchUpInside)
-        return button
     }()
     
     lazy var imageLocation: UIImageView = {
@@ -160,22 +205,106 @@ class FirstViewController: UIViewController{
     var height: CGFloat!
     private let transition = PanelTransition()
     
+    let actual: UILabel = {
+        let label = UILabel()
+        label.font = UIFont.boldSystemFont(ofSize: 21)
+        label.text = "Актуальное"
+        label.translatesAutoresizingMaskIntoConstraints = false
+        return label
+    }()
+    
+    let actualScrollView: UIScrollView = {
+        let v = UIScrollView()
+        v.translatesAutoresizingMaskIntoConstraints = false
+        v.backgroundColor = .white
+        v.showsHorizontalScrollIndicator = false
+        return v
+    }()
+    
+    let actualStackView : UIStackView = {
+        let v = UIStackView()
+        v.translatesAutoresizingMaskIntoConstraints = false
+        v.axis = .horizontal
+        v.distribution = .fillEqually
+        v.spacing = 10.0
+        return v
+    }()
     
     override func viewDidLoad() {
         super.viewDidLoad()
         //self.navigationController?.setNavigationBarHidden(true, animated: false)
         //hideNavigationBar(animated: false)
+        view.backgroundColor = .white
         adViews()
+        creatingActualButtons()
         setConstraints()
+        setButtonImages()
+        network()
     }
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         navigationController?.setNavigationBarHidden(true, animated: animated)
     }
-
+    
     override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
         navigationController?.setNavigationBarHidden(false, animated: animated)
+    }
+    
+    func creatingActualButtons(){
+        for i in 1...3 {
+            
+            let b = UIButton()
+            b.translatesAutoresizingMaskIntoConstraints = false
+            b.backgroundColor = .white
+            //b.layer.cornerRadius = 10
+            b.backgroundColor = .gray
+            b.backgroundColor = UIColor.white
+            //b.setImage(UIImage(named: "actualStack"), for: .normal)
+            let image = UIImageView(image: UIImage(named: "actualStack"))
+            image.layer.cornerRadius = 10
+            image.clipsToBounds = true
+            let titleLabel = UILabel()
+            titleLabel.text = "Крепкий орешек"
+            titleLabel.font = UIFont.boldSystemFont(ofSize: 24)
+            image.translatesAutoresizingMaskIntoConstraints = false
+            titleLabel.translatesAutoresizingMaskIntoConstraints = false
+            let descriptionLabel = UILabel()
+            descriptionLabel.text = "Марфон к лету Комплекс"
+            descriptionLabel.textColor = .gray
+            descriptionLabel.font = UIFont.systemFont(ofSize: 16)
+            descriptionLabel.translatesAutoresizingMaskIntoConstraints = false
+            actualStackView.addArrangedSubview(b)
+            b.addSubview(image)
+            b.addSubview(titleLabel)
+            b.addSubview(descriptionLabel)
+            b.heightAnchor.constraint(equalTo: view.heightAnchor, multiplier: 0.27).isActive = true
+            b.widthAnchor.constraint(equalTo: view.widthAnchor, multiplier: 0.95).isActive = true
+            b.addTarget(self, action: #selector(firstButtonFunc), for: .touchUpInside)
+            image.topAnchor.constraint(equalTo: b.topAnchor, constant: 0).isActive = true
+            image.leadingAnchor.constraint(equalTo: b.leadingAnchor, constant: 0).isActive = true
+            image.trailingAnchor.constraint(equalTo: b.trailingAnchor, constant: 0).isActive = true
+            image.heightAnchor.constraint(equalTo: b.heightAnchor, multiplier: 0.68).isActive = true
+            titleLabel.topAnchor.constraint(equalTo: image.bottomAnchor,constant: 15).isActive = true
+            titleLabel.leadingAnchor.constraint(equalTo: b.leadingAnchor,constant: 0).isActive = true
+            descriptionLabel.topAnchor.constraint(equalTo: titleLabel.bottomAnchor,constant: 5).isActive = true
+            descriptionLabel.leadingAnchor.constraint(equalTo: b.leadingAnchor,constant: 0).isActive = true
+            
+        }
+        
+    }
+    
+    func setButtonImages(){
+        let massiveWithButtons = [serviceButton,masterButton,againButton]
+        let massiveWithImages = [serviceImage,masterImage,againImage]
+        for i in 0 ... 2{
+            print(i)
+            massiveWithButtons[i].addSubview(massiveWithImages[i])
+            massiveWithImages[i].topAnchor.constraint(equalTo: massiveWithButtons[i].topAnchor, constant: 0).isActive = true
+            massiveWithImages[i].leadingAnchor.constraint(equalTo: massiveWithButtons[i].leadingAnchor, constant: 0).isActive = true
+            massiveWithImages[i].trailingAnchor.constraint(equalTo: massiveWithButtons[i].trailingAnchor, constant: 0).isActive = true
+            massiveWithImages[i].bottomAnchor.constraint(equalTo: massiveWithButtons[i].bottomAnchor, constant: 0).isActive = true
+        }
     }
     
     func setConstraints(){
@@ -189,7 +318,8 @@ class FirstViewController: UIViewController{
             topLabel.topAnchor.constraint(equalTo: view.topAnchor, constant: 0),
             topLabel.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 0),
             topLabel.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: 0),
-            topLabel.bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: -620),
+            //topLabel.bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: -600),
+            topLabel.heightAnchor.constraint(equalTo: view.heightAnchor, multiplier: 0.3),
             helloLabel.topAnchor.constraint(equalTo: topLabel.topAnchor, constant: 56),
             helloLabel.leadingAnchor.constraint(equalTo: topLabel.leadingAnchor, constant: 16),
             helloLabel.trailingAnchor.constraint(equalTo: topLabel.trailingAnchor, constant: -52),
@@ -199,12 +329,13 @@ class FirstViewController: UIViewController{
             scrollView.leftAnchor.constraint(equalTo: view.leftAnchor, constant: 8.0),
             scrollView.topAnchor.constraint(equalTo: helloLabel.topAnchor, constant: 30.0),
             scrollView.rightAnchor.constraint(equalTo: view.rightAnchor, constant: -8.0),
-            scrollView.bottomAnchor.constraint(equalTo: topLabel.bottomAnchor, constant: -50),
+            scrollView.bottomAnchor.constraint(equalTo: topLabel.bottomAnchor, constant: -40),
+            //scrollView.bottomAnchor.constraint(equalTo: topLabel.bottomAnchor, multiplier: -20),
             
-            geolocationButton.topAnchor.constraint(equalTo: topLabel.bottomAnchor, constant: -28),
+            geolocationButton.topAnchor.constraint(equalTo: topLabel.bottomAnchor, constant: -30),
             geolocationButton.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 16),
             geolocationButton.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -16),
-            geolocationButton.bottomAnchor.constraint(equalTo: topLabel.bottomAnchor, constant: 28),
+            geolocationButton.bottomAnchor.constraint(equalTo: topLabel.bottomAnchor, constant: 25),
             signUpLabel.topAnchor.constraint(equalTo: geolocationButton.bottomAnchor, constant: 25),
             signUpLabel.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 16),
             signUpLabel.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -16),
@@ -219,11 +350,94 @@ class FirstViewController: UIViewController{
             horizontalStackView.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 10),
             horizontalStackView.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -10),
             horizontalStackView.heightAnchor.constraint(equalTo: view.heightAnchor, multiplier: 0.13),
+            
+            actual.topAnchor.constraint(equalTo: horizontalStackView.bottomAnchor, constant: 15),
+            actual.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 15),
+            
+            actualScrollView.leftAnchor.constraint(equalTo: view.leftAnchor, constant: 8.0),
+            actualScrollView.topAnchor.constraint(equalTo: actual.bottomAnchor, constant: 10.0),
+            actualScrollView.rightAnchor.constraint(equalTo: view.rightAnchor, constant: -8.0),
+            actualScrollView.bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: -8.0),
+            
+            actualStackView.leftAnchor.constraint(equalTo: actualScrollView.leftAnchor, constant: 0),
+            actualStackView.topAnchor.constraint(equalTo: actualScrollView.topAnchor, constant: 8.0),
+            actualStackView.rightAnchor.constraint(equalTo: actualScrollView.rightAnchor, constant: 0),
+            actualStackView.bottomAnchor.constraint(equalTo: actualScrollView.bottomAnchor, constant: -30.0),
+            
+            
+            
         ])
     }
 }
 
 extension FirstViewController{
+    
+    func network(){
+        let URL = "login"
+        let parameters: Parameters = ["phone": "+7 (939) 392 98-87", "password": "123321",]
+        AF.request(baseURL + URL, method: .post,parameters: parameters).responseDecodable(of:global.self) { (data) in
+            print(data)
+            guard let hero = data.value else { return }
+            token = hero.token
+            print(token)
+        }
+    }
+    
+    func adViews(){
+        self.view.addSubview(topLabel)
+        self.view.addSubview(geolocationButton)
+        self.view.addSubview(signUpLabel)
+        self.view.addSubview(serviceButton)
+        self.view.addSubview(masterButton)
+        self.view.addSubview(againButton)
+        self.topLabel.addSubview(helloLabel)
+        self.view.addSubview(ringButton)
+        self.view.addSubview(scrollView)
+        self.view.addSubview(horizontalStackView)
+        self.geolocationButton.addSubview(imageLocation)
+        self.geolocationButton.addSubview(iconLocation)
+        self.view.addSubview(actual)
+        self.view.addSubview(popupView)
+        self.view.addSubview(actualScrollView)
+        self.actualScrollView.addSubview(actualStackView)
+    }
+    
+    private func createSemiModalViewController() -> DJSemiModalViewController {
+        
+        let controller = DJSemiModalViewController()
+        
+        controller.maxWidth = view.frame.width
+        controller.minHeight = 550
+        
+        controller.title = "Title"
+        //controller.titleLabel.font = UIFont.systemFont(ofSize: 22, weight: UIFont.Weight.bold)
+        controller.closeButton.setTitle("Done", for: .normal)
+        controller.widthButton.setTitle("Напечатать", for: .normal)
+        
+        let label = UILabel()
+        label.text = "An example label"
+        label.textAlignment = .center
+        controller.addArrangedSubview(view: label)
+        
+        let imageView = UIImageView(image: UIImage(named: "image1"))
+        imageView.contentMode = .scaleAspectFit
+        controller.addArrangedSubview(view: imageView, height: 200)
+        
+        let secondLabel = UILabel()
+        secondLabel.textAlignment = .center
+        secondLabel.text = "Pen and Pineapple"
+        controller.addArrangedSubview(view: secondLabel)
+        
+        return controller
+    }
+}
+
+
+extension FirstViewController{
+    
+    @objc func ringFunc(){
+        self.present(NotificationViewController(),animated: true)
+    }
     
     @objc func firstButtonFunc(){
         self.present(FirstArticleViewController(), animated: true)
@@ -248,18 +462,19 @@ extension FirstViewController{
     
     
     @objc func recordFunc(){
-        
         let child = studioPopUpView()
+        //        let navVC = UINavigationController(rootViewController: child)
+        //        navVC.isNavigationBarHidden = true
         child.transitioningDelegate = transition   // 2
         child.modalPresentationStyle = .custom  // 3
         height = view.frame.height * 0.60
         transition.height = height
-        self.present(child, animated: true)
+        self.navigationController?.present(child, animated: true)
         
     }
     
     @objc func mastersFunc(){
-        let newVc = ServicesTableViewController()
+        let newVc = MastersViewController()
         DispatchQueue.main.async {
             let backItem = UIBarButtonItem()
             backItem.title = "Назад"
@@ -269,76 +484,55 @@ extension FirstViewController{
             self.navigationController?.navigationBar.topItem?.title = "Мастера"
             self.navigationController?.pushViewController(newVc, animated: true)
         }
-        // Поялвение popUpView
-//        let controller = createSemiModalViewController()
-//
-//        controller.presentOn(presentingViewController: self, animated: true, onDismiss: {
-//            self.tabBarController?.tabBar.isHidden = false
-//            debugPrint("`DJSemiModalViewController` dismissed")
-//        })
-//        self.tabBarController?.tabBar.isHidden = true
-//        debugPrint("`DJSemiModalViewController` presented")
-  
+        
+        //        let controller = createSemiModalViewController()
+        //
+        //        controller.presentOn(presentingViewController: self, animated: true, onDismiss: {
+        //            self.tabBarController?.tabBar.isHidden = false
+        //            debugPrint("`DJSemiModalViewController` dismissed")
+        //        })
+        //        self.tabBarController?.tabBar.isHidden = true
+        //        debugPrint("`DJSemiModalViewController` presented")
+        
     }
     
     @objc func serviceFunc(){
-        let newVc = ServicesTableViewController()
-        print("vasya")
+        var trueVC = ServicesTableViewController()
+        var falseVC = FirstAuthViewController()
         DispatchQueue.main.async {
-            //self.navigationController?.navigationBar.isHidden = false
+            
+            if authorization == true {
+                self.present(trueVC, animated: true, completion: nil)
+            } else {
+                self.navigationController?.navigationBar.isHidden = false
+                let backItem = UIBarButtonItem()
+                backItem.title = "Назад"
+                self.navigationItem.backBarButtonItem = backItem
+                self.navigationItem.backBarButtonItem?.tintColor = .black
+                self.navigationItem.title = "Выберите услугу"
+                self.navigationController?.navigationBar.topItem?.title = "Выберите услугу"
+                self.navigationController?.pushViewController(trueVC, animated: true)
+            }
+            
+        }
+    }
+    
+    @objc func toStudioFunc(){
+        
+        let newVc = GeolocationViewController()
+        DispatchQueue.main.async {
             let backItem = UIBarButtonItem()
+            print("Пришло")
             backItem.title = "Назад"
+            
             self.navigationItem.backBarButtonItem = backItem
             self.navigationItem.backBarButtonItem?.tintColor = .black
-            self.navigationItem.title = "Выберите услугу"
-            self.navigationController?.navigationBar.topItem?.title = "Выберите услугу"
             self.navigationController?.pushViewController(newVc, animated: true)
-            
-             }
+        }
     }
     
-    func adViews(){
-        self.view.addSubview(topLabel)
-        self.view.addSubview(geolocationButton)
-        self.view.addSubview(signUpLabel)
-        self.view.addSubview(serviceButton)
-        self.view.addSubview(masterButton)
-        self.view.addSubview(againButton)
-        self.topLabel.addSubview(helloLabel)
-        self.topLabel.addSubview(ringButton)
-        self.view.addSubview(scrollView)
-        self.view.addSubview(horizontalStackView)
-        self.geolocationButton.addSubview(imageLocation)
-        self.geolocationButton.addSubview(iconLocation)
-        self.view.addSubview(popupView)
-    }
-    
-    private func createSemiModalViewController() -> DJSemiModalViewController {
-
-        let controller = DJSemiModalViewController()
-
-        controller.maxWidth = view.frame.width
-        controller.minHeight = 550
-
-        controller.title = "Title"
-        //controller.titleLabel.font = UIFont.systemFont(ofSize: 22, weight: UIFont.Weight.bold)
-        controller.closeButton.setTitle("Done", for: .normal)
-        controller.widthButton.setTitle("Напечатать", for: .normal)
-
-        let label = UILabel()
-        label.text = "An example label"
-        label.textAlignment = .center
-        controller.addArrangedSubview(view: label)
-
-        let imageView = UIImageView(image: UIImage(named: "image1"))
-        imageView.contentMode = .scaleAspectFit
-        controller.addArrangedSubview(view: imageView, height: 200)
-
-        let secondLabel = UILabel()
-        secondLabel.textAlignment = .center
-        secondLabel.text = "Pen and Pineapple"
-        controller.addArrangedSubview(view: secondLabel)
-
-        return controller
-    }
+//    @objc func authFunc(){
+//        self.present(AuthWithPasswordViewController(), animated: true, completion: nil)
+//    }
 }
+

@@ -1,20 +1,34 @@
 PODS:
+  - Alamofire (5.4.4)
   - DJSemiModalViewController (0.1.4)
+  - InputBarAccessoryView (5.4.0):
+    - InputBarAccessoryView/Core (= 5.4.0)
+  - InputBarAccessoryView/Core (5.4.0)
+  - MessageKit (3.7.0):
+    - InputBarAccessoryView (~> 5.4.0)
   - PullUpController (0.8.0)
 
 DEPENDENCIES:
+  - Alamofire
   - DJSemiModalViewController
+  - MessageKit
   - PullUpController
 
 SPEC REPOS:
   trunk:
+    - Alamofire
     - DJSemiModalViewController
+    - InputBarAccessoryView
+    - MessageKit
     - PullUpController
 
 SPEC CHECKSUMS:
+  Alamofire: f3b09a368f1582ab751b3fff5460276e0d2cf5c9
   DJSemiModalViewController: a7b049b3a565207f739ba81ea99a71ac04deb0fd
+  InputBarAccessoryView: 74d471ab1fa1736806be50328df79257e52865a9
+  MessageKit: 8e76dd8d65ad44b49e1651c673497146416461e9
   PullUpController: 2f7ccaa0f35b31b47e3efbe1854c7f781552b3c7
 
-PODFILE CHECKSUM: 6d0735991a0990d60b0209b305debe6b507b7d19
+PODFILE CHECKSUM: 01930addaf873afe888ffab2f20913bf748bf4a3
 
 COCOAPODS: 1.11.2

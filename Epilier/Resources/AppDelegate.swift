@@ -6,15 +6,27 @@
 //
 
 import UIKit
+import UserNotifications
 
 @main
 class AppDelegate: UIResponder, UIApplicationDelegate {
 
-
+    let notificationCenter = UNUserNotificationCenter.current()
 
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
-        // Override point for customization after application launch.
+        notificationCenter.requestAuthorization(options: [.alert,.sound,.alert]) { (granted,error) in
+            guard granted else { return }
+            self.notificationCenter.getNotificationSettings { (settings) in
+                print(settings)
+                guard settings.authorizationStatus == .authorized else { return }
+            }
+        }
+        
         return true
+    }
+    
+    func sendNotification(){
+         
     }
 
     // MARK: UISceneSession Lifecycle

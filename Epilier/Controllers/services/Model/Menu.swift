@@ -13,13 +13,14 @@ struct Menu {
     var menu: [String]!
     var isStatus: Bool!
     var images: [String]
-
+    var choosed: [Bool]
     
-    init(subMenu: String,menu: [String], isStatus: Bool,images: [String]){
+    init(subMenu: String,menu: [String], isStatus: Bool,images: [String],choosed: [Bool]){
         self.subMenu = subMenu
         self.menu = menu
         self.isStatus = isStatus
         self.images = images
+        self.choosed = choosed
     }
 }
 

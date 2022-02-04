@@ -8,5 +8,6 @@ target 'Epilier' do
   # Pods for Epilier
 pod 'DJSemiModalViewController'
 pod 'PullUpController'
-
+pod 'Alamofire'
+pod 'MessageKit'
 end

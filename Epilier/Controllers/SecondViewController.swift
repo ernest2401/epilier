@@ -16,6 +16,7 @@ class SecondViewController: UIViewController {
         button.translatesAutoresizingMaskIntoConstraints = false
         button.setImage(UIImage(named: "services"), for: .normal)
         button.contentMode = .scaleAspectFit
+        button.addTarget(self, action: #selector(serviceFunc), for: .touchUpInside)
         return button
     }()
     
@@ -26,6 +27,7 @@ class SecondViewController: UIViewController {
         //button.setImage(UIImage(named: "masterButton"), for: .normal)
         button.setBackgroundImage(UIImage(named: "studiesButton"), for: .normal)
         button.contentMode = .scaleAspectFit
+        button.addTarget(self, action: Selector("studiesFunc"), for: .touchUpInside)
         return button
     }()
     
@@ -35,6 +37,7 @@ class SecondViewController: UIViewController {
         button.translatesAutoresizingMaskIntoConstraints = false
         button.setImage(UIImage(named: "reviewsButton"), for: .normal)
         button.contentMode = .scaleAspectFit
+        button.addTarget(self, action: #selector(mastersFunc), for: .touchUpInside)
         return button
     }()
     
@@ -43,7 +46,7 @@ class SecondViewController: UIViewController {
             serviceButton,
             studiesButton,
             reviewButton
-            ])
+        ])
         sv.axis = .vertical
         sv.spacing = 10
         sv.distribution = .fillEqually
@@ -56,6 +59,7 @@ class SecondViewController: UIViewController {
         button.translatesAutoresizingMaskIntoConstraints = false
         button.setBackgroundImage(UIImage(named: "mastersButton"), for: .normal)
         button.contentMode = .scaleAspectFit
+        button.addTarget(self, action: #selector(mastersFunc), for: .touchUpInside)
         return button
     }()
     
@@ -72,30 +76,31 @@ class SecondViewController: UIViewController {
         let sv = UIStackView(arrangedSubviews: [
             mastersButton,
             interestButton,
-            ])
+        ])
         sv.axis = .vertical
         sv.spacing = 10
         sv.distribution = .fillEqually
         return sv
     }()
-   
+    
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        //setNavBar()
+        self.navigationItem.title = "Исследовать"
         view.backgroundColor = .white
         rightStackView.translatesAutoresizingMaskIntoConstraints = false
         leftStackView.translatesAutoresizingMaskIntoConstraints = false
-        
         self.view.addSubview(leftStackView)
         self.view.addSubview(rightStackView)
-        setNavBar()
         setConstraints()
+        
     }
     
     func setNavBar(){
         let navBar = UINavigationBar(frame: CGRect(x: 0, y: 40, width: view.frame.size.width, height: 100))
         self.view.addSubview(navBar)
-
+        
         let navItem = UINavigationItem(title: "Исследовать")
         navBar.setItems([navItem], animated: false)
     }
@@ -114,4 +119,53 @@ class SecondViewController: UIViewController {
         ])
     }
     
+    @objc func serviceFunc(){
+        let newVc = ServicesTableViewController()
+        print("vasya")
+        DispatchQueue.main.async {
+            //self.navigationController?.navigationBar.isHidden = false
+            print(self.navigationController)
+            let backItem = UIBarButtonItem()
+            backItem.title = "Назад"
+            self.navigationItem.backBarButtonItem = backItem
+            self.navigationItem.backBarButtonItem?.tintColor = .black
+            self.navigationController?.pushViewController(newVc, animated: true)
+            
+        }
+    }
+    
+    @objc func studiesFunc(){
+        let newVc = GeolocationViewController()
+        DispatchQueue.main.async {
+            let backItem = UIBarButtonItem()
+            backItem.title = "Назад"
+            
+            self.navigationItem.backBarButtonItem = backItem
+            self.navigationItem.backBarButtonItem?.tintColor = .black
+            self.navigationController?.pushViewController(newVc, animated: true)
+        }
+    }
+    
+    @objc func mastersFunc(){
+        let newVc = MastersViewController()
+        DispatchQueue.main.async {
+            let backItem = UIBarButtonItem()
+            backItem.title = "Назад"
+            self.navigationItem.backBarButtonItem = backItem
+            self.navigationItem.backBarButtonItem?.tintColor = .black
+            self.navigationController?.pushViewController(newVc, animated: true)
+        }
+        
+        //        let controller = createSemiModalViewController()
+        //
+        //        controller.presentOn(presentingViewController: self, animated: true, onDismiss: {
+        //            self.tabBarController?.tabBar.isHidden = false
+        //            debugPrint("`DJSemiModalViewController` dismissed")
+        //        })
+        //        self.tabBarController?.tabBar.isHidden = true
+        //        debugPrint("`DJSemiModalViewController` presented")
+        
+    }
+    
 }
+

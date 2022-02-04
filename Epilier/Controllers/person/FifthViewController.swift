@@ -22,6 +22,18 @@ class FifthViewController: UIViewController {
         return label
     }()
     
+    lazy var lettersLabel: UILabel = {
+        let label = UILabel()
+        label.translatesAutoresizingMaskIntoConstraints = false
+        label.text = "ЕИ"
+        label.textColor = .white
+        label.font = UIFont.systemFont(ofSize: 23)
+        label.font = UIFont.systemFont(ofSize: 100)
+        label.adjustsFontSizeToFitWidth = true
+        label.minimumScaleFactor = 0.0001
+        return label
+    }()
+    
     let balanceLabel : UILabel = {
         let label = UILabel()
         label.translatesAutoresizingMaskIntoConstraints = false
@@ -32,13 +44,99 @@ class FifthViewController: UIViewController {
         return label
     }()
     
-    lazy var personalInfoButton = UIButton()
-    lazy var contrInfoButton = UIButton()
-    lazy var sertificateButton = UIButton()
-    lazy var visitButton = UIButton()
-    lazy var settingsButton = UIButton()
+    lazy var personalInfoButton : UIButton = {
+        let item = UIButton()
+        item.layer.cornerRadius = 10
+        item.translatesAutoresizingMaskIntoConstraints = false
+        //button.setImage(UIImage(named: "reviewsButton"), for: .normal)
+        item.backgroundColor = UIColor.white
+        item.layer.shadowColor = UIColor.black.cgColor
+        item.layer.shadowOffset = CGSize(width: 0.0, height: 1.0)
+        item.layer.shadowOpacity = 0.1
+        item.layer.shadowRadius = 10
+        item.contentMode = .scaleAspectFit
+        let pointerPhoto = UIImageView(image: UIImage(named: "icon"))
+        
+        item.addSubview(pointerPhoto)
+        pointerPhoto.translatesAutoresizingMaskIntoConstraints = false
+        pointerPhoto.topAnchor.constraint(equalTo: item.topAnchor, constant: 20).isActive = true
+        pointerPhoto.trailingAnchor.constraint(equalTo: item.trailingAnchor, constant: -20).isActive = true
+        return item
+    }()
+    lazy var contrInfoButton : UIButton = {
+        let item = UIButton()
+        item.layer.cornerRadius = 10
+        item.translatesAutoresizingMaskIntoConstraints = false
+        //button.setImage(UIImage(named: "reviewsButton"), for: .normal)
+        item.backgroundColor = UIColor.white
+        item.layer.shadowColor = UIColor.black.cgColor
+        item.layer.shadowOffset = CGSize(width: 0.0, height: 1.0)
+        item.layer.shadowOpacity = 0.1
+        item.layer.shadowRadius = 10
+        item.contentMode = .scaleAspectFit
+        let pointerPhoto = UIImageView(image: UIImage(named: "icon"))
+        item.addSubview(pointerPhoto)
+        pointerPhoto.translatesAutoresizingMaskIntoConstraints = false
+        pointerPhoto.topAnchor.constraint(equalTo: item.topAnchor, constant: 20).isActive = true
+        pointerPhoto.trailingAnchor.constraint(equalTo: item.trailingAnchor, constant: -20).isActive = true
+        return item
+    }()
+    lazy var sertificateButton : UIButton = {
+        let item = UIButton()
+        item.layer.cornerRadius = 10
+        item.translatesAutoresizingMaskIntoConstraints = false
+        //button.setImage(UIImage(named: "reviewsButton"), for: .normal)
+        item.backgroundColor = UIColor.white
+        item.layer.shadowColor = UIColor.black.cgColor
+        item.layer.shadowOffset = CGSize(width: 0.0, height: 1.0)
+        item.layer.shadowOpacity = 0.1
+        item.layer.shadowRadius = 10
+        item.contentMode = .scaleAspectFit
+        let pointerPhoto = UIImageView(image: UIImage(named: "icon"))
+        item.addSubview(pointerPhoto)
+        pointerPhoto.translatesAutoresizingMaskIntoConstraints = false
+        pointerPhoto.topAnchor.constraint(equalTo: item.topAnchor, constant: 20).isActive = true
+        pointerPhoto.trailingAnchor.constraint(equalTo: item.trailingAnchor, constant: -20).isActive = true
+        return item
+    }()
+    lazy var visitButton : UIButton = {
+        let item = UIButton()
+        item.layer.cornerRadius = 10
+        item.translatesAutoresizingMaskIntoConstraints = false
+        //button.setImage(UIImage(named: "reviewsButton"), for: .normal)
+        item.backgroundColor = UIColor.white
+        item.layer.shadowColor = UIColor.black.cgColor
+        item.layer.shadowOffset = CGSize(width: 0.0, height: 1.0)
+        item.layer.shadowOpacity = 0.1
+        item.layer.shadowRadius = 10
+        item.contentMode = .scaleAspectFit
+        let pointerPhoto = UIImageView(image: UIImage(named: "icon"))
+        item.addSubview(pointerPhoto)
+        pointerPhoto.translatesAutoresizingMaskIntoConstraints = false
+        pointerPhoto.topAnchor.constraint(equalTo: item.topAnchor, constant: 20).isActive = true
+        pointerPhoto.trailingAnchor.constraint(equalTo: item.trailingAnchor, constant: -20).isActive = true
+        return item
+    }()
+    lazy var settingsButton : UIButton = {
+        let item = UIButton()
+        item.layer.cornerRadius = 10
+        item.translatesAutoresizingMaskIntoConstraints = false
+        //button.setImage(UIImage(named: "reviewsButton"), for: .normal)
+        item.backgroundColor = UIColor.white
+        item.layer.shadowColor = UIColor.black.cgColor
+        item.layer.shadowOffset = CGSize(width: 0.0, height: 1.0)
+        item.layer.shadowOpacity = 0.1
+        item.layer.shadowRadius = 10
+        item.contentMode = .scaleAspectFit
+        let pointerPhoto = UIImageView(image: UIImage(named: "icon"))
+        item.addSubview(pointerPhoto)
+        pointerPhoto.translatesAutoresizingMaskIntoConstraints = false
+        pointerPhoto.topAnchor.constraint(equalTo: item.topAnchor, constant: 20).isActive = true
+        pointerPhoto.trailingAnchor.constraint(equalTo: item.trailingAnchor, constant: -20).isActive = true
+        return item
+    }()
     
-
+    
     lazy var verticalStackView: UIStackView = {
         let sv = UIStackView(arrangedSubviews: [
             personalInfoButton,
@@ -57,11 +155,13 @@ class FifthViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         addSubViews()
-        
         creatingButtons()
         detailingButtons()
         setContstraints()
-        setNavBar()
+        self.navigationItem.title = "Профиль"
+        self.navigationItem.titleView?.backgroundColor = .green
+        self.navigationItem.titleView?.tintColor = .green
+        //setNavBar()
     }
     
     func creatingButtons(){
@@ -76,11 +176,11 @@ class FifthViewController: UIViewController {
             item.layer.shadowOpacity = 0.1
             item.layer.shadowRadius = 10
             item.contentMode = .scaleAspectFit
-            let image = UIImageView(image: UIImage(named: "icon"))
-            item.addSubview(image)
-            image.translatesAutoresizingMaskIntoConstraints = false
-            image.topAnchor.constraint(equalTo: item.topAnchor, constant: 20).isActive = true
-            image.trailingAnchor.constraint(equalTo: item.trailingAnchor, constant: -20).isActive = true
+            let pointerPhoto = UIImageView(image: UIImage(named: "icon"))
+            item.addSubview(pointerPhoto)
+            pointerPhoto.translatesAutoresizingMaskIntoConstraints = false
+            pointerPhoto.topAnchor.constraint(equalTo: item.topAnchor, constant: 20).isActive = true
+            pointerPhoto.trailingAnchor.constraint(equalTo: item.trailingAnchor, constant: -20).isActive = true
         }
     }
     
@@ -88,19 +188,32 @@ class FifthViewController: UIViewController {
         let massive = [personalInfoButton,contrInfoButton,sertificateButton,visitButton,settingsButton]
         let textArray = ["Персональная информация","Противопоказания","Абонементы и сертификаты","Мои визиты","Настройки"]
         let funcArray = ["personFunc","contrFunc","sertificateFunc","visitFunc","settingsFunc"]
+        let photoArray = ["personalPhoto","contrInfoPhoto","sertificatePhoto","visitPhoto","settingsPhoto"]
         for item in 0 ... massive.count - 1{
+            
             let helloLabel: UILabel = {
                 let label = UILabel()
-                label.font = UIFont(name: "SF Pro Text", size: 17)
                 label.font = UIFont.systemFont(ofSize: 17)
                 label.text = textArray[item]
+                label.textColor = .black
                 return label
             }()
+            
+            let iconPhoto = UIImageView(image: UIImage(named: photoArray[item]))
+            
+            
             massive[item].addTarget(self, action: Selector(funcArray[item]), for: .touchUpInside)
             massive[item].addSubview(helloLabel)
+            massive[item].addSubview(iconPhoto)
+            
             helloLabel.translatesAutoresizingMaskIntoConstraints = false
-            helloLabel.topAnchor.constraint(equalTo: massive[item].topAnchor, constant: 20).isActive = true
+            iconPhoto.translatesAutoresizingMaskIntoConstraints = false
+            
+            //helloLabel.topAnchor.constraint(equalTo: massive[item].topAnchor, constant: 20).isActive = true
+            helloLabel.centerYAnchor.constraint(equalTo: massive[item].centerYAnchor).isActive = true
             helloLabel.leadingAnchor.constraint(equalTo: massive[item].leadingAnchor, constant: 60).isActive = true
+            iconPhoto.centerYAnchor.constraint(equalTo: massive[item].centerYAnchor).isActive = true
+            iconPhoto.leadingAnchor.constraint(equalTo: massive[item].leadingAnchor, constant: 10).isActive = true
         }
     }
     
@@ -109,10 +222,12 @@ class FifthViewController: UIViewController {
         self.view.addSubview(nameLabel)
         self.view.addSubview(balanceLabel)
         self.view.addSubview(verticalStackView)
+        self.profilePhoto.addSubview(lettersLabel)
     }
     
     func setNavBar(){
         let navBar = UINavigationBar(frame: CGRect(x: 0, y: 40, width: view.frame.size.width, height: 100))
+//        navBar.backgroundColor = .white
         self.view.addSubview(navBar)
         
         let navItem = UINavigationItem(title: "Профиль")
@@ -125,6 +240,17 @@ class FifthViewController: UIViewController {
         NSLayoutConstraint.activate([
             profilePhoto.topAnchor.constraint(equalTo: view.topAnchor, constant: 110),
             profilePhoto.centerXAnchor.constraint(equalTo: view.centerXAnchor),
+            profilePhoto.widthAnchor.constraint(equalTo: view.widthAnchor, multiplier: 0.26),
+            profilePhoto.heightAnchor.constraint(equalTo: view.heightAnchor, multiplier: 0.12),
+//            lettersLabel.topAnchor.constraint(equalTo: profilePhoto.topAnchor, constant: 25),
+//            lettersLabel.bottomAnchor.constraint(equalTo: profilePhoto.bottomAnchor, constant: -25),
+//            lettersLabel.leadingAnchor.constraint(equalTo: profilePhoto.leadingAnchor, constant: 15),
+//            lettersLabel.trailingAnchor.constraint(equalTo: profilePhoto.trailingAnchor, constant: -15),
+            lettersLabel.widthAnchor.constraint(equalTo: profilePhoto.widthAnchor,multiplier: 0.65),
+            lettersLabel.heightAnchor.constraint(equalTo: profilePhoto.heightAnchor,multiplier: 0.65),
+            lettersLabel.centerXAnchor.constraint(equalTo: profilePhoto.centerXAnchor),
+            lettersLabel.bottomAnchor.constraint(equalTo: profilePhoto.bottomAnchor, constant: -20),
+            
             nameLabel.topAnchor.constraint(equalTo: profilePhoto.bottomAnchor, constant: 20),
             nameLabel.centerXAnchor.constraint(equalTo: view.centerXAnchor),
             balanceLabel.topAnchor.constraint(equalTo: nameLabel.bottomAnchor, constant: 15),
@@ -142,9 +268,7 @@ class FifthViewController: UIViewController {
         let newVc = PersonInformationViewController()
         DispatchQueue.main.async {
             let backItem = UIBarButtonItem()
-            
             backItem.title = "Назад"
-            
             self.navigationItem.backBarButtonItem = backItem
             self.navigationItem.backBarButtonItem?.tintColor = .black
             self.navigationController?.pushViewController(newVc, animated: true)
@@ -165,7 +289,8 @@ class FifthViewController: UIViewController {
         }
     }
     @objc func sertificateFunc(){
-        let newVc = SertificateViewController()
+        print("Сертификат")
+        let newVc = CertificateViewController()
         DispatchQueue.main.async {
             let backItem = UIBarButtonItem()
             

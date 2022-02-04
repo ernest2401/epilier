@@ -85,10 +85,11 @@ class PersonInformationViewController: UIViewController {
             massive[item].addSubview(textField)
             helloLabel.translatesAutoresizingMaskIntoConstraints = false
             textField.translatesAutoresizingMaskIntoConstraints = false
-            helloLabel.topAnchor.constraint(equalTo: massive[item].topAnchor, constant: 10).isActive = true
+            helloLabel.topAnchor.constraint(equalTo: massive[item].topAnchor, constant: 5).isActive = true
             helloLabel.leadingAnchor.constraint(equalTo: massive[item].leadingAnchor, constant: 10).isActive = true
-            textField.topAnchor.constraint(equalTo: helloLabel.bottomAnchor, constant: 10).isActive = true
+            textField.topAnchor.constraint(equalTo: helloLabel.bottomAnchor, constant: 5).isActive = true
             textField.leadingAnchor.constraint(equalTo: massive[item].leadingAnchor, constant: 10).isActive = true
+            textField.bottomAnchor.constraint(equalTo: massive[item].bottomAnchor, constant: -10).isActive = true
             //textField.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -30).isActive = true
         }
     }

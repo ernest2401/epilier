@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Bucket
+   uuid = "F283CBE6-0ABA-443A-8D3D-D719C69DF5E7"
+   type = "0"
+   version = "2.0">
+   <Breakpoints>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            uuid = "58FA3566-FBD0-4B9E-91BC-B6AC8B6716C4"
+            shouldBeEnabled = "Yes"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "Epilier/Controllers/authentication/refreshingPassword/SetPasswordViewController.swift"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "33"
+            endingLineNumber = "33"
+            landmarkName = "SetPasswordViewController"
+            landmarkType = "3">
+            <Locations>
+               <Location
+                  uuid = "58FA3566-FBD0-4B9E-91BC-B6AC8B6716C4 - 2112626f5fb20f88"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "Epilier.SetPasswordViewController.againPasswordLabel.getter : __C.UIButton"
+                  moduleName = "Epilier"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/ernestmigranov/Desktop/Epilier/Epilier/Controllers/authentication/refreshingPassword/SetPasswordViewController.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "33"
+                  endingLineNumber = "33"
+                  offsetFromSymbolStart = "136">
+               </Location>
+               <Location
+                  uuid = "58FA3566-FBD0-4B9E-91BC-B6AC8B6716C4 - c9d30b747a1cefbc"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "Epilier.SetPasswordViewController.againPasswordLabel.setter : __C.UIButton"
+                  moduleName = "Epilier"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/ernestmigranov/Desktop/Epilier/Epilier/Controllers/authentication/refreshingPassword/SetPasswordViewController.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "33"
+                  endingLineNumber = "33"
+                  offsetFromSymbolStart = "108">
+               </Location>
+               <Location
+                  uuid = "58FA3566-FBD0-4B9E-91BC-B6AC8B6716C4 - bb1c1019ad33348"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "Epilier.SetPasswordViewController.againPasswordLabel.modify : __C.UIButton"
+                  moduleName = "Epilier"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/ernestmigranov/Desktop/Epilier/Epilier/Controllers/authentication/refreshingPassword/SetPasswordViewController.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "0"
+                  endingLineNumber = "0"
+                  offsetFromSymbolStart = "20">
+               </Location>
+               <Location
+                  uuid = "58FA3566-FBD0-4B9E-91BC-B6AC8B6716C4 - ce04ba8c1f62230e"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "Epilier.SetPasswordViewController.againPasswordLabel.modify : __C.UIButton with unmangled suffix &quot;.resume.0&quot;"
+                  moduleName = "Epilier"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/ernestmigranov/Desktop/Epilier/Epilier/Controllers/authentication/refreshingPassword/SetPasswordViewController.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "33"
+                  endingLineNumber = "33"
+                  offsetFromSymbolStart = "20">
+               </Location>
+               <Location
+                  uuid = "58FA3566-FBD0-4B9E-91BC-B6AC8B6716C4 - 1a54a279c8d23d74"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "Epilier.SetPasswordViewController.init(nibName: Swift.Optional&lt;Swift.String&gt;, bundle: Swift.Optional&lt;__C.NSBundle&gt;) -&gt; Epilier.SetPasswordViewController"
+                  moduleName = "Epilier"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/ernestmigranov/Desktop/Epilier/Epilier/Controllers/authentication/refreshingPassword/SetPasswordViewController.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "33"
+                  endingLineNumber = "33"
+                  offsetFromSymbolStart = "192">
+               </Location>
+               <Location
+                  uuid = "58FA3566-FBD0-4B9E-91BC-B6AC8B6716C4 - 795bf87b6fca7b8d"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "Epilier.SetPasswordViewController.init(coder: __C.NSCoder) -&gt; Swift.Optional&lt;Epilier.SetPasswordViewController&gt;"
+                  moduleName = "Epilier"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/ernestmigranov/Desktop/Epilier/Epilier/Controllers/authentication/refreshingPassword/SetPasswordViewController.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "33"
+                  endingLineNumber = "33"
+                  offsetFromSymbolStart = "168">
+               </Location>
+            </Locations>
+         </BreakpointContent>
+      </BreakpointProxy>
+   </Breakpoints>
+</Bucket>

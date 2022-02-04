@@ -18,20 +18,17 @@ class SettingsViewController: UIViewController {
     
     let notificationLabel: UILabel = {
         let label = UILabel()
-        //label.backgroundColor = UIColor(hexString: "#C8EFF4")
-        label.font = UIFont(name: "SF Pro Text", size: 19)
         label.font = UIFont.systemFont(ofSize: 17)
         label.text = "Уведомления"
+        label.textColor = .black
         label.translatesAutoresizingMaskIntoConstraints = false
         return label
     }()
     
     let settingsLabel: UILabel = {
         let label = UILabel()
-        //label.backgroundColor = UIColor(hexString: "#C8EFF4")
-        label.font = UIFont(name: "SF Pro Text", size: 17)
         label.font = UIFont.boldSystemFont(ofSize: 17)
-        label.textColor = .gray
+        label.textColor = UIColor(hexString: "#AAABB8")
         label.text = "Настройки уведомлений"
         label.translatesAutoresizingMaskIntoConstraints = false
         return label
@@ -39,10 +36,9 @@ class SettingsViewController: UIViewController {
     
     let recordLabel: UILabel = {
         let label = UILabel()
-        //label.backgroundColor = UIColor(hexString: "#C8EFF4")
-        label.font = UIFont(name: "SF Pro Text", size: 19)
         label.font = UIFont.systemFont(ofSize: 17)
         label.text = "О записи"
+        label.textColor = .black
         label.translatesAutoresizingMaskIntoConstraints = false
         return label
     }()
@@ -55,10 +51,9 @@ class SettingsViewController: UIViewController {
     
     let confirmationLabel: UILabel = {
         let label = UILabel()
-        //label.backgroundColor = UIColor(hexString: "#C8EFF4")
-        label.font = UIFont(name: "SF Pro Text", size: 19)
         label.font = UIFont.systemFont(ofSize: 17)
         label.text = "О подтверждении записи"
+        label.textColor = .black
         label.translatesAutoresizingMaskIntoConstraints = false
         return label
     }()
@@ -71,10 +66,9 @@ class SettingsViewController: UIViewController {
     
     let visitLabel: UILabel = {
         let label = UILabel()
-        //label.backgroundColor = UIColor(hexString: "#C8EFF4")
-        label.font = UIFont(name: "SF Pro Text", size: 19)
         label.font = UIFont.systemFont(ofSize: 17)
         label.text = "О визите за 24 часа"
+        label.textColor = .black
         label.translatesAutoresizingMaskIntoConstraints = false
         return label
     }()
@@ -113,8 +107,8 @@ class SettingsViewController: UIViewController {
             notificationLabel.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 20),
             notificationSwitch.topAnchor.constraint(equalTo: view.topAnchor, constant: 120),
             notificationSwitch.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -25),
-            settingsLabel.topAnchor.constraint(equalTo: notificationLabel.bottomAnchor, constant: 35),
-            settingsLabel.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 25),
+            settingsLabel.topAnchor.constraint(equalTo: notificationLabel.bottomAnchor, constant: 50),
+            settingsLabel.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 20),
             recordLabel.topAnchor.constraint(equalTo: settingsLabel.bottomAnchor, constant: 35),
             recordLabel.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 25),
             recordSwitch.topAnchor.constraint(equalTo: settingsLabel.bottomAnchor, constant: 35),
@@ -141,4 +135,17 @@ class SettingsViewController: UIViewController {
     }
     
     
+}
+
+extension UIColor {
+
+    convenience init(hex: Int) {
+        let components = (
+            R: CGFloat((hex >> 16) & 0xff) / 255,
+            G: CGFloat((hex >> 08) & 0xff) / 255,
+            B: CGFloat((hex >> 00) & 0xff) / 255
+        )
+        self.init(red: components.R, green: components.G, blue: components.B, alpha: 1)
+    }
+
 }

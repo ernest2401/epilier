@@ -38,6 +38,7 @@ class ExpandableHeaderView: UITableViewHeaderFooterView{
         let tapHeader = UITapGestureRecognizer(target: self, action: #selector(clickingOnSubMenu))
         self.addGestureRecognizer(tapHeader)
         self.contentView.addSubview(expandButton)
+        
         setConstraints()
     }
     
@@ -61,6 +62,7 @@ class ExpandableHeaderView: UITableViewHeaderFooterView{
         switch expanding {
         case true:
             expandButton.setImage(UIImage(named: "hideButton"), for: .normal)
+            
         case false:
             expandButton.setImage(UIImage(named: "expandButton"), for: .normal)
         }

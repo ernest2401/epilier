@@ -9,6 +9,9 @@ import Foundation
 import UIKit
 
 class TableViewCell: UITableViewCell{
+    
+    var choosed : Bool = false
+    
     let image : UIImageView = {
         let image = UIImageView()
         image.image = UIImage(named: "image1")
@@ -19,7 +22,7 @@ class TableViewCell: UITableViewCell{
     lazy var titleLabel: UILabel = {
         let label = UILabel()
         //label.backgroundColor = UIColor(hexString: "#C8EFF4")
-        label.font = UIFont(name: "SF Pro Text", size: 14)
+        label.font = UIFont.systemFont(ofSize: 16)
         label.numberOfLines = 2
         label.translatesAutoresizingMaskIntoConstraints = false
         return label
@@ -34,7 +37,7 @@ class TableViewCell: UITableViewCell{
     lazy var priceLabel: UILabel = {
         let label = UILabel()
         //label.backgroundColor = UIColor(hexString: "#C8EFF4")
-        label.font = UIFont(name: "SF Pro Text", size: 8)
+        label.font = UIFont.boldSystemFont(ofSize: 11)
         label.numberOfLines = 1
         label.text = "1200 ₽"
         label.translatesAutoresizingMaskIntoConstraints = false
@@ -51,7 +54,7 @@ class TableViewCell: UITableViewCell{
     lazy var timeLabel: UILabel = {
         let label = UILabel()
         //label.backgroundColor = UIColor(hexString: "#C8EFF4")
-        label.font = UIFont(name: "SF Pro Text", size: 8)
+        label.font = UIFont.boldSystemFont(ofSize: 11)
         label.numberOfLines = 1
         label.text = "45 мин"
         label.translatesAutoresizingMaskIntoConstraints = false
@@ -59,14 +62,15 @@ class TableViewCell: UITableViewCell{
     }()
     
     
+    let icon : UIImageView = {
+        let image = UIImageView()
+        image.translatesAutoresizingMaskIntoConstraints = false
+        return image
+    }()
+    
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
-        self.contentView.addSubview(image)
-        self.contentView.addSubview(titleLabel)
-        self.contentView.addSubview(moneyImage)
-        self.contentView.addSubview(priceLabel)
-        self.contentView.addSubview(timeImage)
-        self.contentView.addSubview(timeLabel)
+        addViews()
         setConstraints()
     }
     
@@ -74,31 +78,42 @@ class TableViewCell: UITableViewCell{
         fatalError("init(coder:) has not been implemented")
     }
     
+    func addViews(){
+        self.contentView.addSubview(image)
+        self.contentView.addSubview(titleLabel)
+        self.contentView.addSubview(moneyImage)
+        self.contentView.addSubview(priceLabel)
+        self.contentView.addSubview(timeImage)
+        self.contentView.addSubview(timeLabel)
+        self.contentView.addSubview(icon)
+    }
+    
     func setConstraints(){
         NSLayoutConstraint.activate([
-            image.topAnchor.constraint(equalTo: contentView.topAnchor, constant: 10),
+            image.topAnchor.constraint(equalTo: contentView.topAnchor, constant: 15),
             image.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 10),
             //image.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: -20)
             image.heightAnchor.constraint(equalTo: contentView.heightAnchor, multiplier: 0.6),
             titleLabel.topAnchor.constraint(equalTo: contentView.topAnchor, constant: 5),
             titleLabel.leadingAnchor.constraint(equalTo: image.trailingAnchor, constant: 10),
-            titleLabel.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -30),
-            titleLabel.heightAnchor.constraint(equalTo: contentView.heightAnchor, multiplier: 0.35),
-            moneyImage.topAnchor.constraint(equalTo: titleLabel.bottomAnchor, constant: 20),
+            titleLabel.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -50),
+            titleLabel.heightAnchor.constraint(equalTo: contentView.heightAnchor, multiplier: 0.65),
+            moneyImage.topAnchor.constraint(equalTo: titleLabel.bottomAnchor, constant: 0),
             moneyImage.leadingAnchor.constraint(equalTo: image.trailingAnchor, constant: 10),
             moneyImage.heightAnchor.constraint(equalTo: contentView.heightAnchor, multiplier: 0.21),
             moneyImage.widthAnchor.constraint(equalTo: contentView.widthAnchor, multiplier: 0.03),
-            priceLabel.topAnchor.constraint(equalTo: titleLabel.bottomAnchor, constant: 20),
+            priceLabel.topAnchor.constraint(equalTo: titleLabel.bottomAnchor, constant: 0),
             priceLabel.leadingAnchor.constraint(equalTo: moneyImage.trailingAnchor, constant: 5),
             priceLabel.heightAnchor.constraint(equalTo: contentView.heightAnchor, multiplier: 0.21),
-            timeImage.topAnchor.constraint(equalTo: titleLabel.bottomAnchor, constant: 20),
+            timeImage.topAnchor.constraint(equalTo: titleLabel.bottomAnchor, constant: 0),
             timeImage.leadingAnchor.constraint(equalTo: priceLabel.trailingAnchor, constant: 20),
             timeImage.heightAnchor.constraint(equalTo: contentView.heightAnchor, multiplier: 0.18),
             //timeImage.widthAnchor.constraint(equalTo: contentView.widthAnchor, multiplier: 0.03),
-            timeLabel.topAnchor.constraint(equalTo: titleLabel.bottomAnchor, constant: 20),
+            timeLabel.topAnchor.constraint(equalTo: titleLabel.bottomAnchor, constant: 0),
             timeLabel.leadingAnchor.constraint(equalTo: timeImage.trailingAnchor, constant: 5),
             timeLabel.heightAnchor.constraint(equalTo: contentView.heightAnchor, multiplier: 0.2),
-            
+            icon.topAnchor.constraint(equalTo: contentView.topAnchor, constant: 20),
+            icon.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -20),
         ])
     }
 }

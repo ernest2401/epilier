@@ -15,13 +15,19 @@ class ThirdViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        let child = SignUpPopUpView()
-        child.transitioningDelegate = transition
-        child.modalPresentationStyle = .custom
+        let navController = UINavigationController.init(rootViewController: SignUpPopUpView())
+        navController.transitioningDelegate = transition
+        navController.modalPresentationStyle = .custom
         
         
         height = view.frame.height * 0.50
         transition.height = height
-        self.present(child, animated: true)
+        //self.present(child, animated: true)
+        self.navigationController?.pushViewController(navController, animated: true)
+        //self.present(navController ,animated: true, completion: nil)
+    }
+    
+    override func viewWillDisappear(_ animated: Bool) {
+        
     }
 }

@@ -14,7 +14,7 @@ class FirstArticleViewController: UIViewController{
     lazy var titleLabel: UILabel = {
         let label = UILabel()
         //label.backgroundColor = .black
-        label.font = UIFont.boldSystemFont(ofSize: 23)
+        label.font = UIFont.boldSystemFont(ofSize: 21)
         label.text = "Рассказываем про уход за лицом"
         label.textColor = .black
         label.translatesAutoresizingMaskIntoConstraints = false
@@ -45,13 +45,17 @@ class FirstArticleViewController: UIViewController{
     }()
     
     override func viewDidLoad() {
+        super.viewDidLoad()
+        view.backgroundColor = .white
+        addSubViews()
+        setConstraints()
+    }
+    
+    func addSubViews(){
         self.view.addSubview(photo)
         self.view.addSubview(titleLabel)
         self.view.addSubview(textLabel)
         self.view.addSubview(closeButton)
-        view.backgroundColor = .white
-        super.viewDidLoad()
-        setConstraints()
     }
     
     func setConstraints(){
