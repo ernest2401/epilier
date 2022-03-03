@@ -20,12 +20,16 @@ class CertificateViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         view.backgroundColor = .white
-
+        self.tabBarController?.tabBar.isHidden = true
         network()
         setupTableView()
         addSubViews()
         setConstraints()
         
+    }
+    
+    override func viewWillDisappear(_ animated: Bool) {
+        self.tabBarController?.tabBar.isHidden = false
     }
     
     func addSubViews(){
@@ -123,25 +127,27 @@ extension CertificateViewController: UITableViewDelegate,UITableViewDataSource {
 
 extension CertificateViewController {
     func network(){
-        headers = [.authorization(bearerToken: token)]
+        headers = [.authorization(bearerToken: token_mobile)]
         let parameters: Parameters = ["client_id": 51]
         
-        AF.request(baseURL + url2, method: .get,parameters: parameters).validate().responseJSON{ responseJSON in
+        AF.request(baseURL + url2, method: .get,parameters:parameters, headers: headers).validate().responseJSON{ responseJSON in
             switch responseJSON.result {
             case .success(let value):
+                print(value)
                 guard let jsonArray = value as? Array<[String: Any]> else { return }
+                print(value)
                 var disallows: [Certificate] = []
                 
                 for jsonObject in jsonArray {
-                    guard
-                        let type_id = jsonObject["type_id"] as? Int
+                    guard let id = jsonObject["id"] as? Int
                     else {
                         return
                     }
+                    print(jsonObject)
                     
-                    let certificate = Certificate(type_id: type_id)
-                    self.massive.append(certificate.type_id)
-                    print(certificate.type_id)
+                    let certificate = Certificate(id: id)
+                    self.massive.append(certificate.id)
+                    print(certificate.id)
                     
                 }
                
@@ -158,5 +164,5 @@ extension CertificateViewController {
 }
 
 struct Certificate{
-    var type_id: Int = 0
+    var id: Int = 0
 }

@@ -14,6 +14,8 @@ class StudiosTableViewCell: UITableViewCell {
     let star = UIImageView(image: UIImage(named: "Star"))
     let point = UIImageView(image: UIImage(named: "point"))
     
+    var city_id: Int = 0
+    
     lazy var button : UIView = {
         let b = UIView()
         b.translatesAutoresizingMaskIntoConstraints = false
@@ -23,7 +25,6 @@ class StudiosTableViewCell: UITableViewCell {
         b.layer.shadowOpacity = 0.4
         b.layer.shadowOffset = CGSize(width: 0.4, height: 0.4)
         b.layer.cornerRadius = 10
-        
         return b
     }()
     
@@ -99,6 +100,7 @@ class StudiosTableViewCell: UITableViewCell {
     }()
     
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
+        
         super.init(style: style, reuseIdentifier: reuseIdentifier)
         self.contentView.addSubview(button)
         self.button.addSubview(titleLabel)

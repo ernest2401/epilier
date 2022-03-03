@@ -11,14 +11,14 @@ import Alamofire
 
 class ContraindicationViewController: UIViewController{
     
-    var massive = [String]()
+    //var massive = [String]()
     var massiveForSearch = [String]()
     var headers: HTTPHeaders = []
     var object = ContraindicationPullUpController()
     var massiveChoosen = [String]()
+    var massiveID = [Int]()
+    var massiveChoosenID = [Int]()
     var appeared: Bool = false
-    
-    //let massive = ["предрасположенность к формированию келоидных и гипертрофических рубцов","плохое заживление ран","гиперчувствительность кожи"]
     
     lazy var tableView = UITableView(frame: CGRect.zero)
     
@@ -37,18 +37,29 @@ class ContraindicationViewController: UIViewController{
         super.viewDidLoad()
         view.backgroundColor = .white
         detailingNavigationBar()
+        //tabBarController.navigationItem.rightBarButtonItem =
         self.view.addSubview(titleLabel)
         self.view.addSubview(tableView)
+        object.delegate = self
         setupTableView()
         setConstraints()
         network()
     }
-
+    
+    
     private func setupTableView(){
         tableView.register(MyTableViewCell.self,forCellReuseIdentifier: "cell")
         tableView.delegate = self
         tableView.dataSource = self
         tableView.tableFooterView = UIView()
+    }
+    
+    override func viewWillAppear(_ animated: Bool) {
+        self.tabBarController?.tabBar.isHidden = true
+    }
+
+    override func viewWillDisappear(_ animated: Bool) {
+        self.tabBarController?.tabBar.isHidden = false
     }
     
     func setConstraints(){
@@ -65,8 +76,9 @@ class ContraindicationViewController: UIViewController{
     }
     
     func detailingNavigationBar(){
-        let saveItem = UIBarButtonItem()
-        saveItem.title = "Сохранить"
+        //let saveItem = UIBarButtonItem(barButtonSystemItem: .save, target: self, action: #selector(self.saveContraindications))
+        let saveItem = UIBarButtonItem(title: "Сохранить", style: .plain, target: self, action: #selector(self.saveContraindications))
+        //saveItem.title = "Сохранить"
         
         self.navigationItem.rightBarButtonItem = saveItem
         self.navigationItem.rightBarButtonItem?.tintColor = .black
@@ -75,7 +87,7 @@ class ContraindicationViewController: UIViewController{
 
 extension ContraindicationViewController: UITableViewDataSource,UITableViewDelegate {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return massive.count
+        return massiveForSearch.count
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
@@ -83,16 +95,16 @@ extension ContraindicationViewController: UITableViewDataSource,UITableViewDeleg
         cell.selectionStyle = .none
         cell.titleLabel.numberOfLines = 0
         cell.titleLabel.lineBreakMode = .byWordWrapping
-        cell.titleLabel.text = massive[indexPath.row]
+        cell.titleLabel.text = massiveForSearch[indexPath.row]
+        cell.id = massiveID[indexPath.row]
         return cell
     }
     
     func tableView(_ tableView: UITableView, didDeselectRowAt indexPath: IndexPath) {
         guard let cell = tableView.cellForRow(at: indexPath) as? MyTableViewCell else {
-                return
-            }
-        
-        
+            return
+        }
+        object.tableView.reloadData()
     }
     
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
@@ -101,40 +113,39 @@ extension ContraindicationViewController: UITableViewDataSource,UITableViewDeleg
     
     func tableView(_ tableView: UITableView, didHighlightRowAt indexPath: IndexPath) {
         guard let cell = tableView.cellForRow(at: indexPath) as? MyTableViewCell else {
-                return
-            }
+            return
+        }
+        
         cell.choosed = !cell.choosed
         switch cell.choosed {
         case true:
             cell.icon.image = UIImage(named: "choosed")
-            massiveChoosen.append(cell.titleLabel.text!)
-            object.contraindicationArray.append(cell.titleLabel.text!)
-            print(massiveChoosen)
+            massiveContraindications.append(cell.titleLabel.text!)
+            massiveChoosenID.append(cell.id)
             object.setViews()
             object.tableView.reloadData()
         case false:
             cell.icon.image = UIImage(named: "round")
-            print(cell.titleLabel.text!)
-            massiveChoosen.removeAll(where: { $0 == cell.titleLabel.text! })
-            object.contraindicationArray.removeAll(where: { $0 == cell.titleLabel.text! })
+           
+            massiveContraindications.removeAll(where: { $0 == cell.titleLabel.text! })
+            massiveChoosenID.removeAll(where: { $0 == cell.id })
             object.setViews()
             
         }
         
-        if massiveChoosen.count == 1{
+        if massiveContraindications.count == 1{
             if appeared == false{
                 addPullUpController(object, initialStickyPointOffset: CGFloat(100.0), animated: true)
                 appeared = true
                 self.tabBarController?.tabBar.isHidden = true
             }
         }
-        if massiveChoosen.count == 0 {
+        if massiveContraindications.count == 0 {
             removePullUpController(object, animated: true)
             appeared = false
-            self.tabBarController?.tabBar.isHidden = false
+            self.tabBarController?.tabBar.isHidden = true
         }
     }
-    
 }
 
 extension ContraindicationViewController{
@@ -156,15 +167,61 @@ extension ContraindicationViewController{
                     else {
                         return
                     }
-                    let disallow = Disallow(name: name)
+                    guard
+                        let id = jsonObject["id"] as? Int
+                    else {
+                        return
+                    }
+                    let disallow = Disallow(name: name,id: id)
                     disallows.append(disallow)
-                    self.massive.append(disallow.name)
+                    self.massiveForSearch.append(disallow.name)
+                    self.massiveID.append(disallow.id)
+                    
                 }
-                //print(self.massive)
+        
                 self.tableView.reloadData()
                 
             case .failure(let error):
                 print(error)
+            }
+        }
+    }
+    
+    @objc func saveContraindications(){
+
+        let parameters: Parameters = ["selected": massiveChoosenID]
+        let url = "mobile/clients/disallows/set"
+        headers = [.authorization(bearerToken: token_mobile)]
+        
+        AF.request(baseURL + url, method: .post,parameters: parameters, headers: headers).validate().responseJSON { responseJSON in
+
+            switch responseJSON.result {
+            case .success(let value):
+                print(value)
+            case .failure(let error):
+                print(error)
+            }
+        }
+    }
+}
+
+extension ContraindicationViewController: PullUpControllerDelegate{
+    func appearedFunc() {
+        //print(appeared)
+        appeared = false
+        //print("Вызвана")
+        //print(massiveChoosen)
+    }
+    
+    func update(data: String) {
+        print("Работает")
+        let cells = self.tableView.visibleCells as! Array<MyTableViewCell>
+        for cell in cells{
+            
+            if cell.titleLabel.text == data{
+                cell.icon.image = UIImage(named: "round")
+                massiveChoosen.removeAll(where: { $0 == data })
+                print(massiveChoosen)
             }
         }
     }
@@ -173,4 +230,5 @@ extension ContraindicationViewController{
 
 struct Disallow{
     var name: String = ""
+    var id: Int
 }

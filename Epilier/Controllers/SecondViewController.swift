@@ -69,6 +69,7 @@ class SecondViewController: UIViewController {
         button.translatesAutoresizingMaskIntoConstraints = false
         button.setImage(UIImage(named: "interestButton"), for: .normal)
         button.contentMode = .scaleAspectFit
+        button.addTarget(self, action: #selector(interestFunc), for: .touchUpInside)
         return button
     }()
     
@@ -123,7 +124,6 @@ class SecondViewController: UIViewController {
         let newVc = ServicesTableViewController()
         print("vasya")
         DispatchQueue.main.async {
-            //self.navigationController?.navigationBar.isHidden = false
             print(self.navigationController)
             let backItem = UIBarButtonItem()
             backItem.title = "Назад"
@@ -156,15 +156,10 @@ class SecondViewController: UIViewController {
             self.navigationController?.pushViewController(newVc, animated: true)
         }
         
-        //        let controller = createSemiModalViewController()
-        //
-        //        controller.presentOn(presentingViewController: self, animated: true, onDismiss: {
-        //            self.tabBarController?.tabBar.isHidden = false
-        //            debugPrint("`DJSemiModalViewController` dismissed")
-        //        })
-        //        self.tabBarController?.tabBar.isHidden = true
-        //        debugPrint("`DJSemiModalViewController` presented")
-        
+    }
+    
+    @objc func interestFunc(){
+        self.present(FirstArticleViewController(), animated: true)
     }
     
 }

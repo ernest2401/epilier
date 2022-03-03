@@ -15,7 +15,8 @@ class MapViewController: UIViewController {
     var headers: HTTPHeaders = []
     var massiveWithStreets: [String] = []
     var massiveWithCities: [String] = []
-    var url2 = "salons_mobile/get"
+    var massiveWithID: [Int] = []
+    var url2 = "mobile/salons/get"
     
     var city = ""
     
@@ -204,7 +205,6 @@ extension MapViewController: CLLocationManagerDelegate{
     
     func creatingPoints(){
         for i in 0 ... self.massiveWithCities.count - 1{
-            print(self.massiveWithCities[i])
             setupPlacemark(adressPlace: self.massiveWithCities[i] + " " + self.massiveWithStreets[i])
         }
 //        print(self.massiveWithCities)
@@ -257,11 +257,17 @@ extension MapViewController: UITableViewDelegate,UITableViewDataSource {
         //        cell.balanceLabel.text = massive[indexPath.row]
         //        cell.textLabel?.text = massive[indexPath.row]
         cell.titleLabel.text = massiveWithStreets[indexPath.row]
+        cell.city_id = massiveWithID[indexPath.row]
         return cell
     }
     
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
         return 235
+    }
+    
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        let cell = tableView.dequeueReusableCell(withIdentifier: "cell")  as! StudiosTableViewCell
+        print(cell.city_id)
     }
     
     func creatingButtons(){
@@ -299,16 +305,14 @@ extension MapViewController: UITableViewDelegate,UITableViewDataSource {
 
 extension MapViewController {
     func network(){
-        headers = [.authorization(bearerToken: token)]
+        headers = [.authorization(bearerToken: token_mobile)]
         let parameters: Parameters = ["client_id": 1]
         
-        AF.request(baseURL + url2, method: .get,parameters: parameters).validate().responseJSON{ responseJSON in
+        AF.request(baseURL + url2, method: .get,headers: headers).validate().responseJSON{ responseJSON in
             switch responseJSON.result {
             case .success(let value):
                 guard let jsonArray = value as? Array<[String: Any]> else { return }
-                //print(jsonArray)
                 var disallows: [Certificate] = []
-                
                 for jsonObject in jsonArray {
                     guard
                         let address = jsonObject["address"] as? String
@@ -320,17 +324,21 @@ extension MapViewController {
                     else {
                         return
                     }
-                    let certificate = MapStudio(address: address, city_name: city_name)
+                    guard
+                        let id = jsonObject["id"] as? Int
+                    else {
+                        return
+                    }
+                    let certificate = MapStudio(address: address, city_name: city_name,id:id )
                     self.massiveWithStreets.append(certificate.address)
                     self.massiveWithCities.append(certificate.city_name)
+                    self.massiveWithID.append(certificate.id)
                 }
                 
             case .failure(let error):
-                //print("V")
                 print(error)
             }
-            //print(self.massiveWithStreets[0])
-            //print(self.massiveWithCities)
+            print(self.massiveWithID)
             self.tableView.reloadData()
             self.creatingPoints()
         }
@@ -340,4 +348,5 @@ extension MapViewController {
 struct MapStudio{
     var address: String
     var city_name: String
+    var id: Int
 }

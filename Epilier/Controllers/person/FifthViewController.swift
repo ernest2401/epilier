@@ -164,6 +164,10 @@ class FifthViewController: UIViewController {
         //setNavBar()
     }
     
+    override func viewWillAppear(_ animated: Bool) {
+        self.tabBarController?.tabBar.isHidden = false
+    }
+    
     func creatingButtons(){
         let massive = [personalInfoButton,contrInfoButton,sertificateButton,visitButton,settingsButton]
         for item in massive{
@@ -222,7 +226,7 @@ class FifthViewController: UIViewController {
         self.view.addSubview(nameLabel)
         self.view.addSubview(balanceLabel)
         self.view.addSubview(verticalStackView)
-        self.profilePhoto.addSubview(lettersLabel)
+        self.view.addSubview(lettersLabel)
     }
     
     func setNavBar(){
@@ -242,14 +246,14 @@ class FifthViewController: UIViewController {
             profilePhoto.centerXAnchor.constraint(equalTo: view.centerXAnchor),
             profilePhoto.widthAnchor.constraint(equalTo: view.widthAnchor, multiplier: 0.26),
             profilePhoto.heightAnchor.constraint(equalTo: view.heightAnchor, multiplier: 0.12),
-//            lettersLabel.topAnchor.constraint(equalTo: profilePhoto.topAnchor, constant: 25),
-//            lettersLabel.bottomAnchor.constraint(equalTo: profilePhoto.bottomAnchor, constant: -25),
-//            lettersLabel.leadingAnchor.constraint(equalTo: profilePhoto.leadingAnchor, constant: 15),
-//            lettersLabel.trailingAnchor.constraint(equalTo: profilePhoto.trailingAnchor, constant: -15),
-            lettersLabel.widthAnchor.constraint(equalTo: profilePhoto.widthAnchor,multiplier: 0.65),
-            lettersLabel.heightAnchor.constraint(equalTo: profilePhoto.heightAnchor,multiplier: 0.65),
-            lettersLabel.centerXAnchor.constraint(equalTo: profilePhoto.centerXAnchor),
+//            lettersLabel.widthAnchor.constraint(equalTo: profilePhoto.widthAnchor,multiplier: 0.65),
+//            lettersLabel.heightAnchor.constraint(equalTo: profilePhoto.heightAnchor,multiplier: 0.65),
+//            lettersLabel.centerXAnchor.constraint(equalTo: profilePhoto.centerXAnchor),
+//            lettersLabel.bottomAnchor.constraint(equalTo: profilePhoto.bottomAnchor, constant: -20),
+            lettersLabel.topAnchor.constraint(equalTo: profilePhoto.topAnchor, constant: 20),
             lettersLabel.bottomAnchor.constraint(equalTo: profilePhoto.bottomAnchor, constant: -20),
+            lettersLabel.leadingAnchor.constraint(equalTo: profilePhoto.leadingAnchor, constant: 25),
+            lettersLabel.trailingAnchor.constraint(equalTo: profilePhoto.trailingAnchor, constant: -20),
             
             nameLabel.topAnchor.constraint(equalTo: profilePhoto.bottomAnchor, constant: 20),
             nameLabel.centerXAnchor.constraint(equalTo: view.centerXAnchor),

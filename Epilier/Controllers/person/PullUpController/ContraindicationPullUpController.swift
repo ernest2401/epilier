@@ -9,15 +9,25 @@ import Foundation
 import UIKit
 import PullUpController
 
+protocol PullUpControllerDelegate: class {
+    func update(data: String)
+    
+    func appearedFunc()
+}
+
 class ContraindicationPullUpController: PullUpController {
     var expanded: Bool = false
     
-    var object = PullUpController()
+    //var object = PullUpController()
+    //var vc = ContraindicationViewController()
     var contraindicationArray = [String]()
+    
+    weak var delegate: PullUpControllerDelegate?
     
     lazy var label : UILabel = {
         let label = UILabel()
         label.text = "Универсальная программа"
+        label.numberOfLines = 2
         label.translatesAutoresizingMaskIntoConstraints = false
         return label
     }()
@@ -46,22 +56,26 @@ class ContraindicationPullUpController: PullUpController {
         setNotExpandedView()
         setViews()
         tableView.reloadData()
+        //print(expanded)
+        self.tabBarController?.tabBar.isHidden = true
+        print(massiveContraindications)
+    }
+    
+    override func viewWillDisappear(_ animated: Bool) {
+        self.tabBarController?.tabBar.isHidden = true
     }
     
     override func pullUpControllerDidMove(to point: CGFloat) {
         expanded = !expanded
         
         if expanded == false {
-            tableView.removeFromSuperview()
-            expandedLabel.removeFromSuperview()
-            setNotExpandedView()
+            print("Сжат")
+            notExpandedViewFunc()
             
             //label.text = self.contraindicationArray[0] + " и еще " + String(contraindicationArray.count)
         } else {
             print("Растянут")
-            button.removeFromSuperview()
-            label.removeFromSuperview()
-            setExpandedView()
+            expandedViewFunc()
         }
     }
     
@@ -95,42 +109,104 @@ class ContraindicationPullUpController: PullUpController {
         tableView.topAnchor.constraint(equalTo: expandedLabel.bottomAnchor, constant: 15).isActive = true
         tableView.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 20).isActive = true
         tableView.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -20).isActive = true
-        tableView.bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: -350).isActive = true
+        tableView.bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: -50).isActive = true
     }
     
     func setViews(){
-        if contraindicationArray.count > 0{
+        if massiveContraindications.count > 0{
             let attrs1 = [NSAttributedString.Key.font : UIFont.boldSystemFont(ofSize: 16), NSAttributedString.Key.foregroundColor : UIColor.black]
             
             let attrs2 = [NSAttributedString.Key.font : UIFont.boldSystemFont(ofSize: 18), NSAttributedString.Key.foregroundColor : UIColor.gray]
             
-            let attributedString1 = NSMutableAttributedString(string: self.contraindicationArray[0], attributes:attrs1)
+            let attributedString1 = NSMutableAttributedString(string: massiveContraindications[0], attributes:attrs1)
             
-            let attributedString2 = NSMutableAttributedString(string:" и еще " + String(self.contraindicationArray.count - 1), attributes:attrs2)
+            let attributedString2 = NSMutableAttributedString(string:" и еще " + String(massiveContraindications.count - 1), attributes:attrs2)
             
-            if self.contraindicationArray.count > 1{
+            if massiveContraindications.count > 1{
                 attributedString1.append(attributedString2)
             }
             self.label.attributedText = attributedString1
         }
     }
     
+    func notExpandedViewFunc(){
+        tableView.removeFromSuperview()
+        expandedLabel.removeFromSuperview()
+        setNotExpandedView()
+    }
     
+    func expandedViewFunc(){
+        button.removeFromSuperview()
+        label.removeFromSuperview()
+        setExpandedView()
+    }
 }
 
 extension ContraindicationPullUpController: UITableViewDataSource,UITableViewDelegate {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return contraindicationArray.count
+        return massiveContraindications.count
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "cell")  as! MyTableViewCell
-        cell.titleLabel.text = contraindicationArray[indexPath.row]
+        cell.titleLabel.text = massiveContraindications[indexPath.row]
         cell.icon.image = UIImage(named: "choosed")
+        cell.choosed = true
         return cell
     }
     
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
         return 65
+    }
+    
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        guard let cell = tableView.cellForRow(at: indexPath) as? MyTableViewCell else {
+                return
+            }
+        cell.choosed = !cell.choosed
+
+        switch cell.choosed {
+        case true:
+            cell.icon.image = UIImage(named: "choosed")
+            //massiveChoosen.append(cell.titleLabel.text!)
+            tableView.reloadData()
+            print(massiveContraindications)
+            //vc.contraindicationArray.append(cell.titleLabel.text!)
+            //print(massiveChoosen)
+            //object.setViews()
+            //vc.tableView.reloadData()
+        case false:
+            cell.icon.image = UIImage(named: "round")
+            print(cell.titleLabel.text!)
+            massiveContraindications.removeAll(where: { $0 == cell.titleLabel.text! })
+            print(massiveContraindications)
+            tableView.reloadData()
+            var data = cell.titleLabel.text
+            update(data: data!)
+            //object.contraindicationArray.removeAll(where: { $0 == cell.titleLabel.text! })
+            //object.setViews()
+            if massiveContraindications.count == 0{
+                print("Дошло до нуля")
+                removePullUpController(self, animated: true, completion: nil)
+                expanded = false
+                tableView.removeFromSuperview()
+                expandedLabel.removeFromSuperview()
+                setNotExpandedView()
+                self.tabBarController?.tabBar.isHidden = true
+                appearedFunc()
+            }
+        }
+    }
+}
+
+extension ContraindicationPullUpController: PullUpControllerDelegate{
+    func update(data: String) {
+        print(data)
+        delegate?.update(data: data)
+    }
+    
+    func appearedFunc() {
+        delegate?.appearedFunc()
+        
     }
 }

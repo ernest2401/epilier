@@ -138,6 +138,7 @@ class FirstAuthViewController: UIViewController {
     }
     
     @objc func nextFunc(){
+        print("Нажимается")
         self.network()
     }
     
@@ -164,24 +165,41 @@ class FirstAuthViewController: UIViewController {
 
 extension FirstAuthViewController{
     func network(){
-        let url = "user_mobile/create_first"
+        //let url = "user_mobile/create_first"
+        let url = "mobile/user/is_exist"
         guard let number = self.textField.text else {
             return
         }
+        print(number)
         
         let parameters: [String: String] = [
             "phone" : number,
         ]
         
-        AF.request(baseURL + url, method: .post, parameters: parameters).validate().responseDecodable(of:SmsCode.self) { (data) in
+        AF.request(baseURL + url, method: .get, parameters: parameters).validate().responseDecodable(of:SmsCode.self) { (data) in
+            //print(data.response)
             guard let code = data.value else { return }
-            self.codeSMS = String(code.response.suffix(5).dropLast())
-            print("1" + self.codeSMS)
+            //self.codeSMS = String(code.response.suffix(5).dropLast())
+            //print("1" + self.codeSMS)
             //print(code.response.suffix(5).dropLast())
-            self.toNewViewController()
+            if code.status == true{
+                self.toAuthenticate()
+            } else {
+                self.toNewViewController()
+            }
         }
         
     }
+    
+    func toAuthenticate(){
+        let newVc = AuthWithPasswordViewController()
+        //let newVc = RefreshViewController()
+        
+        //newVc.codeSms = self.codeSMS
+        //print(self.codeSMS)
+        self.present(newVc, animated: true, completion: nil)
+    }
+    
     func toNewViewController(){
         let newVc = SmsAuthViewController()
         //let newVc = RefreshViewController()
@@ -197,4 +215,5 @@ extension FirstAuthViewController{
 
 struct SmsCode: Decodable{
     var response: String = ""
+    var status: Bool
 }

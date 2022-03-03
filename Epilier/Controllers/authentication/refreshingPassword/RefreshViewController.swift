@@ -9,6 +9,8 @@ import UIKit
 import Alamofire
 
 class RefreshViewController: UIViewController {
+    
+    var object = SmsRefreshViewController()
 
     lazy var closeButton: UIButton = {
         let button = UIButton()
@@ -51,6 +53,14 @@ class RefreshViewController: UIViewController {
         return label
     }()
     
+    var textField: UITextField = {
+        let textField = UITextField()
+        textField.placeholder = "----"
+        textField.font = UIFont.systemFont(ofSize: 17)
+        textField.translatesAutoresizingMaskIntoConstraints = false
+        return textField
+    }()
+    
     lazy var phoneButton : UIButton = {
         let item = UIButton()
         item.layer.cornerRadius = 10
@@ -70,14 +80,11 @@ class RefreshViewController: UIViewController {
             label.textColor = .gray
             return label
         }()
-        let textField = UITextField()
-        textField.attributedText = NSAttributedString(string: "Vasya")
-        textField.font = UIFont.systemFont(ofSize: 17)
-        self.view.addSubview(textField)
+        //self.view.addSubview(textField)
         item.addSubview(helloLabel)
         item.addSubview(textField)
         helloLabel.translatesAutoresizingMaskIntoConstraints = false
-        textField.translatesAutoresizingMaskIntoConstraints = false
+       
         helloLabel.topAnchor.constraint(equalTo: item.topAnchor, constant: 10).isActive = true
         helloLabel.leadingAnchor.constraint(equalTo: item.leadingAnchor, constant: 10).isActive = true
         textField.topAnchor.constraint(equalTo: helloLabel.bottomAnchor, constant: 10).isActive = true
@@ -130,7 +137,7 @@ class RefreshViewController: UIViewController {
     
     @objc func nextFunc(){
         network()
-        self.present(SmsRefreshViewController(), animated: true, completion: nil)
+        self.present(object, animated: true, completion: nil)
     }
     
     
@@ -143,13 +150,19 @@ class RefreshViewController: UIViewController {
 
 extension RefreshViewController {
     func network(){
-        print(token)
         let URL = "restore/phone"
-        let parameters: Parameters = ["phone": "89373045555", "token": token,]
+        
+        guard let phone = textField.text else {
+            return
+        }
+        
+        let parameters: Parameters = ["phone": phone]
+        
         AF.request(baseURL + URL, method: .post,parameters: parameters).responseDecodable(of:RefreshCode.self) { (data) in
             guard let code = data.value else { return }
             print(code)
         }
+        object.number = phone
     }
 }
 

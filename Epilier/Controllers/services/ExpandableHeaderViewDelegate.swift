@@ -30,8 +30,6 @@ class ExpandableHeaderView: UITableViewHeaderFooterView{
     var section: Int!
     var delegate: ExpandableHeaderViewDelegate?
     
-    
-    
     override init(reuseIdentifier: String?) {
         super.init(reuseIdentifier: reuseIdentifier)
         

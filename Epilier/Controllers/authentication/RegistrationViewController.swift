@@ -256,8 +256,9 @@ extension RegistrationViewController {
         let parameters: [String: String] = [
             "phone" : phone,
             //"second_phone": extraPhone,
-            //"name": name,
+            "name": name,
             "password": password,
+            "confirm_password": extraPassword,
             //"birth_date": birthday,
             //"gender": self.gender,
             //"email": "empty@mail.ru",

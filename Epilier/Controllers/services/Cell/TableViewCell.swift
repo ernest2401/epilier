@@ -112,7 +112,8 @@ class TableViewCell: UITableViewCell{
             timeLabel.topAnchor.constraint(equalTo: titleLabel.bottomAnchor, constant: 0),
             timeLabel.leadingAnchor.constraint(equalTo: timeImage.trailingAnchor, constant: 5),
             timeLabel.heightAnchor.constraint(equalTo: contentView.heightAnchor, multiplier: 0.2),
-            icon.topAnchor.constraint(equalTo: contentView.topAnchor, constant: 20),
+            icon.heightAnchor.constraint(equalTo: contentView.heightAnchor, multiplier: 0.2),
+            icon.topAnchor.constraint(equalTo: contentView.topAnchor,constant: 25),
             icon.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -20),
         ])
     }

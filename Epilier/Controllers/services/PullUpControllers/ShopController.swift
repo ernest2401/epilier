@@ -15,10 +15,13 @@ class ShopController: PullUpController {
     var object = PullUpController()
     var name : String = ""
     
+    weak var delegate: PullUpControllerDelegate?
+    
     lazy var label : UILabel = {
         let label = UILabel()
         label.text = "Универсальная программа"
         label.translatesAutoresizingMaskIntoConstraints = false
+        label.numberOfLines = 2
         return label
     }()
     
@@ -53,7 +56,7 @@ class ShopController: PullUpController {
         return button
     }()
     
-    var massive = [String]()
+    //var massive = [String]()
 
     lazy var tableView = UITableView(frame: CGRect.zero)
     
@@ -61,6 +64,7 @@ class ShopController: PullUpController {
         super.viewDidLoad()
         setView()
         setNotExpandedView()
+        print("Вызвалось")
     }
     
     override func pullUpControllerDidMove(to point: CGFloat) {
@@ -92,6 +96,7 @@ class ShopController: PullUpController {
         
         label.topAnchor.constraint(equalTo: view.topAnchor, constant: 30).isActive = true
         label.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 30).isActive = true
+        label.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -60).isActive = true
         button.topAnchor.constraint(equalTo: view.topAnchor, constant: 30).isActive = true
         button.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -25).isActive = true
     }
@@ -118,6 +123,23 @@ class ShopController: PullUpController {
         nextButton.centerXAnchor.constraint(equalTo: view.centerXAnchor).isActive = true
     }
     
+    func setViews(){
+        if massiveServices.count > 0{
+            let attrs1 = [NSAttributedString.Key.font : UIFont.boldSystemFont(ofSize: 16), NSAttributedString.Key.foregroundColor : UIColor.black]
+            
+            let attrs2 = [NSAttributedString.Key.font : UIFont.boldSystemFont(ofSize: 18), NSAttributedString.Key.foregroundColor : UIColor.gray]
+            
+            let attributedString1 = NSMutableAttributedString(string: massiveServices[0], attributes:attrs1)
+            
+            let attributedString2 = NSMutableAttributedString(string:" и еще " + String(massiveServices.count - 1), attributes:attrs2)
+            
+            if massiveServices.count > 1{
+                attributedString1.append(attributedString2)
+            }
+            self.label.attributedText = attributedString1
+        }
+    }
+    
     @objc func nextButtonFunc(){
         let backItem = UIBarButtonItem()
         backItem.title = "Назад"
@@ -133,18 +155,66 @@ class ShopController: PullUpController {
 
 extension ShopController: UITableViewDataSource,UITableViewDelegate {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return 5
+        return massiveServices.count
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "cell")  as! TableViewCell
-        cell.titleLabel.text = "Универсальная программа"
+        cell.titleLabel.text = massiveServices[indexPath.row]
         cell.icon.image = UIImage(named: "choosed")
+        cell.choosed = true
         return cell
     }
     
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
         return 65
     }
+    
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        guard let cell = tableView.cellForRow(at: indexPath) as? TableViewCell else {
+                return
+            }
+        cell.choosed = !cell.choosed
+
+        switch cell.choosed {
+        case true:
+            cell.icon.image = UIImage(named: "choosed")
+            //massiveChoosen.append(cell.titleLabel.text!)
+            tableView.reloadData()
+            print(massiveServices)
+            
+        case false:
+            cell.icon.image = UIImage(named: "round")
+            print(cell.titleLabel.text!)
+            massiveServices.removeAll(where: { $0 == cell.titleLabel.text! })
+            print(massiveServices)
+            tableView.reloadData()
+            let data = cell.titleLabel.text
+            update(data: data!)
+            if massiveServices.count == 0{
+                print("Дошло до нуля")
+                removePullUpController(self, animated: true, completion: nil)
+                expanded = false
+                tableView.removeFromSuperview()
+                expandedLabel.removeFromSuperview()
+                priceLabel.removeFromSuperview()
+                button.removeFromSuperview()
+                nextButton.removeFromSuperview()
+                setNotExpandedView()
+                appearedFunc()
+            }
+        }
+    }
 }
 
+extension ShopController: PullUpControllerDelegate{
+    func update(data: String) {
+        print(data)
+        delegate?.update(data: data)
+    }
+    
+    func appearedFunc() {
+        delegate?.appearedFunc()
+        
+    }
+}

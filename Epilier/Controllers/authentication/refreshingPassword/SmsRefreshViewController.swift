@@ -6,10 +6,16 @@
 //
 
 import UIKit
+import Alamofire
 
 class SmsRefreshViewController: UIViewController {
     var count = 5
-
+    var status: Bool = false
+    
+    var number : String = ""
+    
+    var object = SetPasswordViewController()
+    
     lazy var closeButton: UIButton = {
         let button = UIButton()
         button.translatesAutoresizingMaskIntoConstraints = false
@@ -60,8 +66,8 @@ class SmsRefreshViewController: UIViewController {
         label.font = UIFont(name: "SF Pro Text", size: 17)
         label.font = UIFont.systemFont(ofSize: 17)
         
-        label.text = "+7 937 521 48 19 введите код из СМС"
-        label.attributedText = attributedText(withString: "+7 937 521 48 19 введите код из СМС", boldString: "+7 937 521 48 19", font: label.font)
+        label.text = number + " введите код из СМС"
+        label.attributedText = attributedText(withString: number + " введите код из СМС", boldString: number, font: label.font)
         label.lineBreakMode = .byWordWrapping
         label.numberOfLines = 0
         label.translatesAutoresizingMaskIntoConstraints = false
@@ -78,11 +84,18 @@ class SmsRefreshViewController: UIViewController {
         return button
     }()
     
+    let textField: UITextField = {
+        let textField = UITextField()
+        textField.placeholder = "------"
+        textField.font = UIFont.systemFont(ofSize: 17)
+        textField.translatesAutoresizingMaskIntoConstraints = false
+        return textField
+    }()
+    
     lazy var phoneButton : UIButton = {
         let item = UIButton()
         item.layer.cornerRadius = 10
         item.translatesAutoresizingMaskIntoConstraints = false
-        //button.setImage(UIImage(named: "reviewsButton"), for: .normal)
         item.backgroundColor = UIColor.white
         item.layer.shadowColor = UIColor.black.cgColor
         item.layer.shadowOffset = CGSize(width: 0.0, height: 1.0)
@@ -97,14 +110,9 @@ class SmsRefreshViewController: UIViewController {
             label.textColor = .gray
             return label
         }()
-        let textField = UITextField()
-        textField.placeholder = "------"
-        textField.font = UIFont.systemFont(ofSize: 17)
-        self.view.addSubview(textField)
         item.addSubview(helloLabel)
         item.addSubview(textField)
         helloLabel.translatesAutoresizingMaskIntoConstraints = false
-        textField.translatesAutoresizingMaskIntoConstraints = false
         helloLabel.topAnchor.constraint(equalTo: item.topAnchor, constant: 10).isActive = true
         helloLabel.leadingAnchor.constraint(equalTo: item.leadingAnchor, constant: 10).isActive = true
         textField.topAnchor.constraint(equalTo: helloLabel.bottomAnchor, constant: 10).isActive = true
@@ -138,6 +146,7 @@ class SmsRefreshViewController: UIViewController {
     
     
     override func viewDidLoad() {
+        print("Открылся")
         super.viewDidLoad()
         view.backgroundColor = .white
         addSubViews()
@@ -191,7 +200,7 @@ class SmsRefreshViewController: UIViewController {
     }
     
     @objc func nextFunc(){
-        self.present(SetPasswordViewController(), animated: true, completion: nil)
+        network()
     }
     
     
@@ -233,4 +242,36 @@ extension SmsRefreshViewController {
         againButton.topAnchor.constraint(equalTo: phoneButton.bottomAnchor, constant: 35).isActive = true
         againButton.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 20).isActive = true
     }
+}
+
+
+extension SmsRefreshViewController{
+    func network(){
+        let URL = "mobile/restore/confirm"
+
+        guard let code = textField.text else { return }
+
+        let parameters: Parameters = ["phone": number, "code": code]
+
+        AF.request(baseURL + URL, method: .post,parameters: parameters).responseDecodable(of:ConfirmCode.self) { (data) in
+            guard let response = data.value else { return }
+            
+            self.status = response.status
+            print("Меняется")
+        }
+        toNextViewController()
+    }
+    
+    func toNextViewController(){
+        if status == true{
+            object.number = number
+            self.present(object, animated: true, completion: nil)
+        } else {
+            print("Код неверный")
+        }
+    }
+}
+
+struct ConfirmCode: Decodable{
+    var status: Bool
 }

@@ -6,6 +6,7 @@
 //
 
 import UIKit
+import Alamofire
 
 class AuthWithPasswordViewController: UIViewController {
     
@@ -26,8 +27,25 @@ class AuthWithPasswordViewController: UIViewController {
         
         button.setTitle("Далее", for: .normal)
         button.setTitleColor(.black, for: .normal)
-        //button.addTarget(self, action: #selector(authFunc), for: .touchUpInside)
+        button.addTarget(self, action: #selector(authFunc), for: .touchUpInside)
         return button
+    }()
+    
+    lazy var phoneField : UITextField = {
+        let textField = UITextField()
+        textField.placeholder = "Номер телефона"
+        textField.font = UIFont.systemFont(ofSize: 19)
+        textField.translatesAutoresizingMaskIntoConstraints = false
+        return textField
+    }()
+    
+    lazy var passwordField : UITextField = {
+        let textField = UITextField()
+        textField.placeholder = "Пароль"
+        textField.isSecureTextEntry = true
+        textField.font = UIFont.systemFont(ofSize: 19)
+        textField.translatesAutoresizingMaskIntoConstraints = false
+        return textField
     }()
     
     let authPhoto = UIImageView(image: UIImage(named: "authProfile"))
@@ -140,6 +158,7 @@ class AuthWithPasswordViewController: UIViewController {
     
     func detailingButtons(){
         let massive = [personalInfoButton,contrInfoButton]
+        let fields = [phoneField,passwordField]
         let textArray = ["Телефон","Пароль"]
         for item in 0 ... massive.count - 1{
             let helloLabel: UILabel = {
@@ -150,25 +169,16 @@ class AuthWithPasswordViewController: UIViewController {
                 label.textColor = .gray
                 return label
             }()
-            let textField = UITextField()
-            if item == 0{
-                textField.keyboardType = .numberPad
-            }
-            if item == 1{
-                textField.isSecureTextEntry = true
-            }
-            
-            textField.font = UIFont.systemFont(ofSize: 17)
-            self.view.addSubview(textField)
+
             massive[item].addSubview(helloLabel)
-            massive[item].addSubview(textField)
+            massive[item].addSubview(fields[item])
             helloLabel.translatesAutoresizingMaskIntoConstraints = false
-            textField.translatesAutoresizingMaskIntoConstraints = false
+            fields[item].translatesAutoresizingMaskIntoConstraints = false
             helloLabel.topAnchor.constraint(equalTo: massive[item].topAnchor, constant: 10).isActive = true
             helloLabel.leadingAnchor.constraint(equalTo: massive[item].leadingAnchor, constant: 10).isActive = true
-            textField.topAnchor.constraint(equalTo: helloLabel.bottomAnchor, constant: 10).isActive = true
-            textField.leadingAnchor.constraint(equalTo: massive[item].leadingAnchor, constant: 10).isActive = true
-            textField.trailingAnchor.constraint(equalTo: massive[item].trailingAnchor, constant: -10).isActive = true
+            fields[item].topAnchor.constraint(equalTo: helloLabel.bottomAnchor, constant: 10).isActive = true
+            fields[item].leadingAnchor.constraint(equalTo: massive[item].leadingAnchor, constant: 10).isActive = true
+            fields[item].trailingAnchor.constraint(equalTo: massive[item].trailingAnchor, constant: -10).isActive = true
             //textField.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -30).isActive = true
         }
     }
@@ -178,21 +188,42 @@ class AuthWithPasswordViewController: UIViewController {
     }
     
     @objc func authFunc(){
-        let newVc = MainTabBarController()
-        DispatchQueue.main.async {
-            //self.navigationController?.navigationBar.isHidden = false
-            let backItem = UIBarButtonItem()
-            backItem.title = "Назад"
-            self.navigationItem.backBarButtonItem = backItem
-            self.navigationItem.backBarButtonItem?.tintColor = .black
-            self.navigationItem.title = "Выберите услугу"
-            self.navigationController?.navigationBar.topItem?.title = "Выберите услугу"
-            self.navigationController?.pushViewController(newVc, animated: true)
-             }
+        network()
     }
     
     @objc func passwordFunc(){
         self.present(RefreshViewController(), animated: true, completion: nil)
     }
 
+}
+
+extension AuthWithPasswordViewController{
+    func network(){
+        let url = "auth"
+        guard let number = self.phoneField.text else {
+            return
+        }
+        guard let password = self.passwordField.text else {
+            return
+        }
+        print(number)
+        
+        let parameters: [String: String] = [
+            "phone" : number,
+            "password": password,
+        ]
+        
+        AF.request(baseURL + url, method: .post, parameters: parameters).validate().responseDecodable(of:SmsCode.self) { (data) in
+            
+            guard let code = data.value else { return }
+            if code.status == true{
+                
+                self.view.window!.rootViewController?.dismiss(animated: true, completion: nil)
+                authorization = true
+            } else {
+                self.phoneLabel.text = "Неверный логин или пароль"
+            }
+        }
+        
+    }
 }

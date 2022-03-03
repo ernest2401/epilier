@@ -12,6 +12,8 @@ class MyTableViewCell: UITableViewCell {
     
     var choosed : Bool = false
     
+    var id: Int = 0
+    
     let icon : UIImageView = {
         let image = UIImageView()
         image.image = UIImage(named: "round")
@@ -39,8 +41,10 @@ class MyTableViewCell: UITableViewCell {
     func setConstraints(){
         NSLayoutConstraint.activate([
             icon.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -20),
-            icon.widthAnchor.constraint(equalTo: contentView.widthAnchor, multiplier: 0.04),
+            icon.widthAnchor.constraint(equalTo: contentView.widthAnchor, multiplier: 0.05),
             icon.centerYAnchor.constraint(equalTo: contentView.centerYAnchor),
+//            icon.topAnchor.constraint(equalTo: contentView.topAnchor, constant: 18),
+//            icon.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: -18),
             
             titleLabel.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 20),
             titleLabel.centerYAnchor.constraint(equalTo: contentView.centerYAnchor),

@@ -7,6 +7,7 @@
 
 import Foundation
 import UIKit
+import Alamofire
 
 class SettingsViewController: UIViewController {
     
@@ -110,15 +111,15 @@ class SettingsViewController: UIViewController {
             settingsLabel.topAnchor.constraint(equalTo: notificationLabel.bottomAnchor, constant: 50),
             settingsLabel.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 20),
             recordLabel.topAnchor.constraint(equalTo: settingsLabel.bottomAnchor, constant: 35),
-            recordLabel.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 25),
+            recordLabel.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 20),
             recordSwitch.topAnchor.constraint(equalTo: settingsLabel.bottomAnchor, constant: 35),
             recordSwitch.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -25),
             confirmationLabel.topAnchor.constraint(equalTo: recordLabel.bottomAnchor, constant: 35),
-            confirmationLabel.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 25),
+            confirmationLabel.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 20),
             confirmationSwitch.topAnchor.constraint(equalTo: recordLabel.bottomAnchor, constant: 35),
             confirmationSwitch.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -25),
             visitLabel.topAnchor.constraint(equalTo: confirmationLabel.bottomAnchor, constant: 35),
-            visitLabel.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 25),
+            visitLabel.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 20),
             visitSwitch.topAnchor.constraint(equalTo: confirmationLabel.bottomAnchor, constant: 35),
             visitSwitch.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -25),
             
@@ -134,18 +135,11 @@ class SettingsViewController: UIViewController {
         self.navigationItem.rightBarButtonItem?.tintColor = .black
     }
     
-    
 }
 
-extension UIColor {
-
-    convenience init(hex: Int) {
-        let components = (
-            R: CGFloat((hex >> 16) & 0xff) / 255,
-            G: CGFloat((hex >> 08) & 0xff) / 255,
-            B: CGFloat((hex >> 00) & 0xff) / 255
-        )
-        self.init(red: components.R, green: components.G, blue: components.B, alpha: 1)
+extension SettingsViewController{
+    func network(){
+        
     }
-
 }
+

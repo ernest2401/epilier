@@ -6,8 +6,13 @@
 //
 
 import UIKit
+import Alamofire
 
 class SetPasswordViewController: UIViewController {
+    
+    var status: Bool = false
+    
+    var number: String = ""
     
     lazy var closeButton: UIButton = {
         let button = UIButton()
@@ -72,8 +77,23 @@ class SetPasswordViewController: UIViewController {
         }
     }
     
+    let passwordField: UITextField = {
+        let textField = UITextField()
+        textField.translatesAutoresizingMaskIntoConstraints = false
+        textField.font = UIFont.systemFont(ofSize: 17)
+        return textField
+    }()
+    
+    let confirmPasswordField: UITextField = {
+        let textField = UITextField()
+        textField.translatesAutoresizingMaskIntoConstraints = false
+        textField.font = UIFont.systemFont(ofSize: 17)
+        return textField
+    }()
+    
     func detailingButtons(){
         let massive = [passwordLabel,againPasswordLabel]
+        let massiveFields = [passwordField,confirmPasswordField]
         let textArray = ["Придумайте пароль","Повторите пароль"]
         for item in 0 ... massive.count - 1{
             let helloLabel: UILabel = {
@@ -88,14 +108,13 @@ class SetPasswordViewController: UIViewController {
             helloLabel.translatesAutoresizingMaskIntoConstraints = false
             helloLabel.topAnchor.constraint(equalTo: massive[item].topAnchor, constant: 10).isActive = true
             helloLabel.leadingAnchor.constraint(equalTo: massive[item].leadingAnchor, constant: 10).isActive = true
-            let textField = UITextField()
-            textField.font = UIFont.systemFont(ofSize: 17)
-            massive[item].addSubview(textField)
-            textField.translatesAutoresizingMaskIntoConstraints = false
             
-            textField.topAnchor.constraint(equalTo: helloLabel.bottomAnchor, constant: 10).isActive = true
-            textField.leadingAnchor.constraint(equalTo: massive[item].leadingAnchor, constant: 10).isActive = true
-            textField.trailingAnchor.constraint(equalTo: massive[item].trailingAnchor, constant: -10).isActive = true
+            massive[item].addSubview(massiveFields[item])
+            
+            
+            massiveFields[item].topAnchor.constraint(equalTo: helloLabel.bottomAnchor, constant: 10).isActive = true
+            massiveFields[item].leadingAnchor.constraint(equalTo: massive[item].leadingAnchor, constant: 10).isActive = true
+            massiveFields[item].trailingAnchor.constraint(equalTo: massive[item].trailingAnchor, constant: -10).isActive = true
             
         }
         
@@ -117,7 +136,12 @@ class SetPasswordViewController: UIViewController {
     }
     
     @objc func nextFunc(){
-        self.present(RegistrationViewController(), animated: true, completion: nil)
+        network()
+        if status == true{
+            self.dismiss(animated: true, completion: nil)
+        } else {
+            print("Еще раз")
+        }
     }
     
     
@@ -125,4 +149,21 @@ class SetPasswordViewController: UIViewController {
         self.dismiss(animated: true, completion: nil)
     }
     
+}
+
+extension SetPasswordViewController{
+    func network(){
+        let URL = "mobile/restore/password"
+
+        guard let password = passwordField.text else { return }
+        guard let confirmPassword = confirmPasswordField.text else { return }
+
+        let parameters: Parameters = ["phone": number,"password": password, "confirm_password": confirmPassword]
+
+        AF.request(baseURL + URL, method: .post,parameters: parameters).responseDecodable(of:ConfirmCode.self) { (data) in
+            guard let response = data.value else { return }
+            print(response.status)
+            self.status = response.status
+        }
+    }
 }

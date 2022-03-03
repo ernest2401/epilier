@@ -7,8 +7,15 @@
 
 import Foundation
 import UIKit
+import Alamofire
 
 class VisitsViewController: UIViewController {
+    
+    var headers: HTTPHeaders = []
+    
+    var massiveVisits = [String]()
+    var massiveDates = [String]()
+    var massiveMasters = [String]()
 
     let buttonsView : UIView = {
         var view = UIView()
@@ -55,21 +62,34 @@ class VisitsViewController: UIViewController {
     
     let firstImage = UIImageView(image: UIImage(named: "masterPhoto"))
     
+    let button: UIButton = {
+       var button = UIButton()
+        button.setImage(UIImage(named: "visitImage"), for: .normal)
+        button.translatesAutoresizingMaskIntoConstraints = false
+       return button
+    }()
 
     override func viewDidLoad() {
         super.viewDidLoad()
         self.title = "Мои визиты"
         self.view.backgroundColor = .white
+        self.tabBarController?.tabBar.isHidden = true
 
         self.view.addSubview(topView)
         self.view.addSubview(segmentedControl)
         self.view.addSubview(scrollView)
         self.scrollView.addSubview(stackView)
-        creatingButtons()
+        self.view.addSubview(button)
+        //creatingButtons()
+        network()
         setConstraints()
+
     }
 
-
+    override func viewWillDisappear(_ animated: Bool) {
+        self.tabBarController?.tabBar.isHidden = false
+    }
+    
     @objc func segmentAction(_ segmentedControl: UISegmentedControl) {
             switch (segmentedControl.selectedSegmentIndex) {
             case 0:
@@ -82,7 +102,7 @@ class VisitsViewController: UIViewController {
         }
     
     func creatingButtons(){
-        for i in 1...3 {
+        for i in 0 ... self.massiveVisits.count - 1 {
             
             let b = UIButton()
             b.translatesAutoresizingMaskIntoConstraints = false
@@ -94,7 +114,7 @@ class VisitsViewController: UIViewController {
             b.layer.shadowOpacity = 0.4
             b.layer.shadowRadius = 2
             stackView.addArrangedSubview(b)
-            b.heightAnchor.constraint(equalTo: view.heightAnchor, multiplier: 0.2).isActive = true
+            b.heightAnchor.constraint(equalTo: view.heightAnchor, multiplier: 0.26).isActive = true
             b.widthAnchor.constraint(equalTo: view.widthAnchor, multiplier: 0.95).isActive = true
             
             
@@ -105,7 +125,7 @@ class VisitsViewController: UIViewController {
                 //label.backgroundColor = UIColor(hexString: "#C8EFF4")
                 label.font = UIFont(name: "SF Pro Text", size: 17)
                 label.font = UIFont.boldSystemFont(ofSize: 17)
-                label.text = "Лифтинговая программа"
+                label.text = self.massiveVisits[i]
                 label.translatesAutoresizingMaskIntoConstraints = false
                 return label
             }()
@@ -115,14 +135,58 @@ class VisitsViewController: UIViewController {
                 //label.backgroundColor = UIColor(hexString: "#C8EFF4")
                 label.font = UIFont(name: "SF Pro Text", size: 12)
                 label.textColor = .gray
-                label.text = "Виктория"
+                label.text = self.massiveMasters[i]
                 label.translatesAutoresizingMaskIntoConstraints = false
                 return label
+            }()
+            
+            let stripView: UIView = {
+                let view = UIView()
+                view.backgroundColor = UIColor(hexString: "DCDCDC")
+                view.translatesAutoresizingMaskIntoConstraints = false
+                return view
+            }()
+            
+            let dateLabel: UILabel = {
+               let label = UILabel()
+                label.text = "Дата и время"
+                label.textColor = UIColor(hexString: "#AAABB8")
+                label.translatesAutoresizingMaskIntoConstraints = false
+               return label
+            }()
+            
+            let date: UILabel = {
+               let label = UILabel()
+                label.text = self.massiveDates[i]
+                label.textColor = .black
+                label.translatesAutoresizingMaskIntoConstraints = false
+               return label
+            }()
+            
+            let adressLabel: UILabel = {
+               let label = UILabel()
+                label.text = "Адрес"
+                label.textColor = UIColor(hexString: "#AAABB8")
+                label.translatesAutoresizingMaskIntoConstraints = false
+               return label
+            }()
+            
+            let adress: UILabel = {
+               let label = UILabel()
+                label.text = "Epilier на ул.Павлюхина, 25"
+                label.textColor = .black
+                label.translatesAutoresizingMaskIntoConstraints = false
+               return label
             }()
             
             b.addSubview(firstImage)
             b.addSubview(label)
             b.addSubview(nameLabel)
+            b.addSubview(stripView)
+            b.addSubview(dateLabel)
+            b.addSubview(date)
+            b.addSubview(adressLabel)
+            b.addSubview(adress)
             firstImage.translatesAutoresizingMaskIntoConstraints = false
             firstImage.leadingAnchor.constraint(equalTo: b.leadingAnchor, constant: 15).isActive = true
             firstImage.topAnchor.constraint(equalTo: b.topAnchor, constant: 20).isActive = true
@@ -130,6 +194,19 @@ class VisitsViewController: UIViewController {
             label.topAnchor.constraint(equalTo: b.topAnchor, constant: 15).isActive = true
             nameLabel.leadingAnchor.constraint(equalTo: firstImage.trailingAnchor, constant: 10).isActive = true
             nameLabel.topAnchor.constraint(equalTo: label.bottomAnchor, constant: 10).isActive = true
+            stripView.topAnchor.constraint(equalTo: nameLabel.bottomAnchor, constant: 10).isActive = true
+            stripView.heightAnchor.constraint(equalTo: b.heightAnchor, multiplier: 0.006).isActive = true
+            stripView.leadingAnchor.constraint(equalTo: b.leadingAnchor, constant: 10).isActive = true
+            stripView.trailingAnchor.constraint(equalTo: b.trailingAnchor, constant: -10).isActive = true
+            dateLabel.topAnchor.constraint(equalTo: stripView.bottomAnchor, constant: 20).isActive = true
+            dateLabel.leadingAnchor.constraint(equalTo: b.leadingAnchor, constant: 20).isActive = true
+            date.topAnchor.constraint(equalTo: dateLabel.bottomAnchor, constant: 8).isActive = true
+            date.leadingAnchor.constraint(equalTo: b.leadingAnchor, constant: 20).isActive = true
+            adressLabel.topAnchor.constraint(equalTo: date.bottomAnchor, constant: 20).isActive = true
+            adressLabel.leadingAnchor.constraint(equalTo: b.leadingAnchor, constant: 20).isActive = true
+            adress.topAnchor.constraint(equalTo: adressLabel.bottomAnchor, constant: 8).isActive = true
+            adress.leadingAnchor.constraint(equalTo: b.leadingAnchor, constant: 20).isActive = true
+            
         }
     }
 
@@ -149,25 +226,69 @@ class VisitsViewController: UIViewController {
             scrollView.leftAnchor.constraint(equalTo: view.leftAnchor, constant: 8.0),
             scrollView.topAnchor.constraint(equalTo: topView.bottomAnchor, constant: 20.0),
             scrollView.rightAnchor.constraint(equalTo: view.rightAnchor, constant: -8.0),
-            scrollView.bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: -8.0),
+            scrollView.bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: -100.0),
             
             stackView.leftAnchor.constraint(equalTo: scrollView.leftAnchor, constant: 0),
             stackView.topAnchor.constraint(equalTo: scrollView.topAnchor, constant: 8.0),
             stackView.rightAnchor.constraint(equalTo: scrollView.rightAnchor, constant: 0),
-            stackView.bottomAnchor.constraint(equalTo: scrollView.bottomAnchor, constant: -8.0),
+            stackView.bottomAnchor.constraint(equalTo: scrollView.bottomAnchor, constant: -100.0),
+            
+            button.topAnchor.constraint(equalTo: scrollView.bottomAnchor, constant: 20),
+            button.centerXAnchor.constraint(equalTo: view.centerXAnchor)
         ])
     }
 }
 
-class Visits2ViewController: UIViewController {
-    
-    
-    override func viewDidLoad() {
-        super.viewDidLoad()
+extension VisitsViewController{
+    func network(){
+        headers = [.authorization(bearerToken: token_mobile)]
+        let url = "mobile/visit/get"
         
+        let request = AF.request(baseURL + url, method: .get, headers: headers)
         
-        // add ten buttons to the stack view
+        request.responseDecodable(of: [VisitDetail].self) { (response) in
+            //print(response)
+            guard let films = response.value else { return }
+            //self.massiveVisits.append()
+            print(films)
+            
+            
+            for i in 0 ... films.count - 1{
+                if films[i].services.count != 0{
+                    //print(films[i].services[0].name)
+                    self.massiveVisits.append(films[i].services[0].name)
+                    //self.massiveVisits.append(films[i].services[0])
+                }
+                self.massiveDates.append(films[i].formated_date)
+                //print(films[i].staff)
+                self.massiveMasters.append(films[i].staff.name + " " + films[i].staff.last_name)
+            }
+            self.creatingButtons()
+            
+        }
         
         
     }
+}
+
+struct VisitDetail: Decodable{
+    //var visit_dt: String
+    var services = [Visit]()
+    var formated_date: String
+    var staff: Staff
+}
+
+struct Visit: Decodable{
+    //var formated_date: String
+    //var services = [Service]()
+    var name: String
+}
+
+struct Service: Decodable{
+    var name: String
+}
+
+struct Staff: Decodable{
+    var name: String
+    var last_name: String
 }

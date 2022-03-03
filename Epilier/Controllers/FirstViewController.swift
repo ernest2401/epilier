@@ -240,6 +240,7 @@ class FirstViewController: UIViewController{
         setConstraints()
         setButtonImages()
         network()
+        network_mobile()
     }
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
@@ -329,10 +330,10 @@ class FirstViewController: UIViewController{
             scrollView.leftAnchor.constraint(equalTo: view.leftAnchor, constant: 8.0),
             scrollView.topAnchor.constraint(equalTo: helloLabel.topAnchor, constant: 30.0),
             scrollView.rightAnchor.constraint(equalTo: view.rightAnchor, constant: -8.0),
-            scrollView.bottomAnchor.constraint(equalTo: topLabel.bottomAnchor, constant: -40),
+            scrollView.heightAnchor.constraint(equalTo: topLabel.heightAnchor, multiplier: 0.5),
             //scrollView.bottomAnchor.constraint(equalTo: topLabel.bottomAnchor, multiplier: -20),
             
-            geolocationButton.topAnchor.constraint(equalTo: topLabel.bottomAnchor, constant: -30),
+            geolocationButton.topAnchor.constraint(equalTo: scrollView.bottomAnchor, constant: 20),
             geolocationButton.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 16),
             geolocationButton.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -16),
             geolocationButton.bottomAnchor.constraint(equalTo: topLabel.bottomAnchor, constant: 25),
@@ -376,10 +377,19 @@ extension FirstViewController{
         let URL = "login"
         let parameters: Parameters = ["phone": "+7 (939) 392 98-87", "password": "123321",]
         AF.request(baseURL + URL, method: .post,parameters: parameters).responseDecodable(of:global.self) { (data) in
-            print(data)
             guard let hero = data.value else { return }
             token = hero.token
-            print(token)
+            //print(token)
+        }
+    }
+    
+    func network_mobile(){
+        let URL = "auth"
+        let parameters: Parameters = ["phone": "+7 (939) 392 98-87", "password": "123321",]
+        AF.request(baseURL + URL, method: .post,parameters: parameters).responseDecodable(of:global.self) { (data) in
+            guard let hero = data.value else { return }
+            token_mobile = hero.token
+            print(token_mobile)
         }
     }
     
@@ -500,9 +510,8 @@ extension FirstViewController{
         var trueVC = ServicesTableViewController()
         var falseVC = FirstAuthViewController()
         DispatchQueue.main.async {
-            
-            if authorization == true {
-                self.present(trueVC, animated: true, completion: nil)
+            if authorization == false {
+                self.present(falseVC, animated: true, completion: nil)
             } else {
                 self.navigationController?.navigationBar.isHidden = false
                 let backItem = UIBarButtonItem()

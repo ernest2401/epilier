@@ -14,9 +14,9 @@ class studioPopUpView: UIViewController, UIGestureRecognizerDelegate{
     
     var headers: HTTPHeaders = []
     
-    var massive: [String] = []
+    var massive = [String]()
     
-    var url2 = "salons_mobile/get"
+    var url2 = "mobile/salons/get"
     
     let viewGesture = UIView()
     
@@ -243,16 +243,15 @@ class studioPopUpView: UIViewController, UIGestureRecognizerDelegate{
 
 extension studioPopUpView {
     func network(){
-        headers = [.authorization(bearerToken: token)]
+        headers = [.authorization(bearerToken: token_mobile)]
         let parameters: Parameters = ["client_id": 1]
         
-        AF.request(baseURL + url2, method: .get,parameters: parameters).validate().responseJSON{ responseJSON in
+        AF.request(baseURL + url2, method: .get,headers: headers).validate().responseJSON{ responseJSON in
             switch responseJSON.result {
             case .success(let value):
                 guard let jsonArray = value as? Array<[String: Any]> else { return }
-                print(jsonArray)
                 var disallows: [Certificate] = []
-                
+                //print(jsonArray)
                 for jsonObject in jsonArray {
                     guard
                         let address = jsonObject["address"] as? String
@@ -261,20 +260,26 @@ extension studioPopUpView {
                     }
                     let certificate = Studio(address: address)
                     self.massive.append(certificate.address)
-                    
+
                 }
                 
             case .failure(let error):
                 print("V")
                 print(error)
             }
-            print(self.massive[0])
-            self.signUpLabel.setTitle("Epilier на ул." + self.massive[0], for: .normal)
+            //print(self.massive[0])
+            self.signUpLabel.setTitle("Epilier на " + self.massive[0], for: .normal)
         }
         
     }
 }
 
 struct Studio: Decodable{
+    var address: String
+    //var data: [Data]
+    //var id: Int
+}
+
+struct Data: Decodable{
     var address: String
 }

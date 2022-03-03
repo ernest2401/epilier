@@ -164,7 +164,6 @@ extension GeolocationViewController: UITableViewDelegate,UITableViewDataSource {
         table.backgroundColor = .white
         table.tableFooterView = UIView()
         table.translatesAutoresizingMaskIntoConstraints = false
-        
     }
 }
 
@@ -173,34 +172,24 @@ extension GeolocationViewController{
         headers = [.authorization(bearerToken: token)]
         let url = "city/get"
         
-        AF.request(baseURL + url, method: .get, headers: headers).validate().responseJSON{ responseJSON in
-            print("Вызывается")
-            switch responseJSON.result {
-            case .success(let value):
-                
-                guard let jsonArray = value as? Array<[String: Any]> else { return }
-                
-                var posts: [City] = []
-                
-                for jsonObject in jsonArray {
-                    guard
-                        let name = jsonObject["name"] as? String
-                    else {
-                        return
-                    }
-                    let post = City(name: name)
-                    posts.append(post)
-                    self.massive.append(post.name)
-                    self.massiveForSearch.append(post.name)
+        let request = AF.request(baseURL + url, method: .get, headers: headers)
+        let queue = DispatchQueue.global(qos: .utility)
+        queue.async {
+            request.responseDecodable(of: Item.self){ (response) in
+                guard let films = response.value else { return }
+                print(films.data[0].name)
+                for item in films.data{
+                    self.massive.append(item.name)
+                    self.massiveForSearch.append(item.name)
                 }
-                
-                self.table.reloadData()
-                
-            case .failure(let error):
-                print(error)
+                DispatchQueue.main.async {
+                    self.table.reloadData()
+                }
             }
         }
     }
+    
+    
 }
 
 extension GeolocationViewController: UISearchBarDelegate{
@@ -220,6 +209,10 @@ extension GeolocationViewController: UISearchBarDelegate{
     
 }
 
-struct City{
+struct Item: Decodable {
+    var data = [City]()
+}
+
+struct City: Decodable{
     var name: String
 }
